@@ -1,15 +1,8 @@
 import { Suspense } from "react";
-
-const API_URL = process.env.API_URL ?? "http://localhost:3000/api";
-
-type Lodge = {
-  id: string;
-  name: string;
-};
+import { lodgesFindAll } from "@/lib/api/generated";
 
 async function LodgeList() {
-  const res = await fetch(`${API_URL}/lodges`);
-  const lodges: Lodge[] = await res.json();
+  const { data: lodges } = await lodgesFindAll();
 
   return (
     <ul>
