@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types.js';
 import { AppModule } from './../src/app.module.js';
+import { setupApp } from './../src/setup-app.js';
 
 // Requires a migrated database at DATABASE_URL (see docker-compose.yml)
 describe('LodgesController (e2e)', () => {
@@ -14,12 +15,13 @@ describe('LodgesController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    setupApp(app);
     await app.init();
   });
 
-  it('/lodges (GET)', async () => {
+  it('/api/lodges (GET)', async () => {
     const response = await request(app.getHttpServer())
-      .get('/lodges')
+      .get('/api/lodges')
       .expect(200);
 
     expect(Array.isArray(response.body)).toBe(true);
