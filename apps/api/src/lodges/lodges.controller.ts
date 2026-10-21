@@ -34,6 +34,7 @@ export class LodgesController {
 
   @Get(':id')
   @ApiOkResponse({ schema: schemaRef(lodgeSchema) })
+  @ApiBadRequestResponse({ description: 'Invalid lodge id (not a UUID)' })
   @ApiNotFoundResponse({ description: 'Lodge not found' })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.lodgesService.findOne(id);

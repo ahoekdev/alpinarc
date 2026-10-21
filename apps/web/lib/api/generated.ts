@@ -129,6 +129,11 @@ export type lodgesFindOneResponse200 = {
   status: 200
 }
 
+export type lodgesFindOneResponse400 = {
+  data: void
+  status: 400
+}
+
 export type lodgesFindOneResponse404 = {
   data: void
   status: 404
@@ -137,7 +142,7 @@ export type lodgesFindOneResponse404 = {
 export type lodgesFindOneResponseSuccess = (lodgesFindOneResponse200) & {
   headers: Headers;
 };
-export type lodgesFindOneResponseError = (lodgesFindOneResponse404) & {
+export type lodgesFindOneResponseError = (lodgesFindOneResponse400 | lodgesFindOneResponse404) & {
   headers: Headers;
 };
 
