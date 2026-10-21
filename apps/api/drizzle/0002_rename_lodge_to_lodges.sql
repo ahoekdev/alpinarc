@@ -1,0 +1,1 @@
+ALTER TABLE "lodge" RENAME TO "lodges";

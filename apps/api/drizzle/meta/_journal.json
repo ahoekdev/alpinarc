@@ -15,6 +15,13 @@
       "when": 1792572283429,
       "tag": "0001_bored_banshee",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792575003126,
+      "tag": "0002_rename_lodge_to_lodges",
+      "breakpoints": true
     }
   ]
 }

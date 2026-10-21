@@ -1,0 +1,47 @@
+{
+  "id": "fc28bb1d-fb04-440b-9ca4-19e0035f727e",
+  "prevId": "bfc4aa9c-3190-4dbc-bca5-bc702a017a13",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.lodges": {
+      "name": "lodges",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {
+      "\"public\".\"lodge\"": "\"public\".\"lodges\""
+    }
+  }
+}

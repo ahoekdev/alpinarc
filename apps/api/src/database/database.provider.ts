@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import { lodges } from './schema.js';
+import * as schema from './schema.js';
 
 export const DATABASE = 'DATABASE';
 
@@ -12,7 +12,7 @@ export const databaseProvider = {
       connectionString: process.env.DATABASE_URL,
     });
 
-    return drizzle(pool, { schema: { lodges } });
+    return drizzle(pool, { schema, casing: 'snake_case' });
   },
 };
 

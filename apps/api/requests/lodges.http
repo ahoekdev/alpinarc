@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:3000/lodges
+
+### Get all lodges
+GET {{baseUrl}}
+Accept: application/json
