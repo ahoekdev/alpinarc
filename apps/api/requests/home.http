@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:3000
+
+### Get Hello World
+GET {{baseUrl}}
+Accept: application/json
