@@ -5,4 +5,4 @@ export const lodges = pgTable('lodge', {
   name: varchar().notNull(),
 });
 
-export type User = typeof lodges.$inferSelect;
+export type Lodge = typeof lodges.$inferSelect;
