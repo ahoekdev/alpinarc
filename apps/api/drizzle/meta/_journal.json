@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1792571521185,
-      "tag": "0000_daffy_bedlam",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1792572283429,
-      "tag": "0001_bored_banshee",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1792575003126,
-      "tag": "0002_rename_lodge_to_lodges",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1792583687725,
-      "tag": "0003_lodge_name_max_length",
+      "when": 1792598589588,
+      "tag": "0000_init",
       "breakpoints": true
     }
   ]

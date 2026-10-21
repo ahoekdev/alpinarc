@@ -1,11 +1,11 @@
 {
-  "id": "9e8c4572-316e-495a-822b-10d47f6a14bc",
+  "id": "1eb584b9-72dc-4f48-ab01-1b830941e6e5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.lodge": {
-      "name": "lodge",
+    "public.lodges": {
+      "name": "lodges",
       "schema": "",
       "columns": {
         "id": {
@@ -17,9 +17,9 @@
         },
         "name": {
           "name": "name",
-          "type": "varchar",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {},
