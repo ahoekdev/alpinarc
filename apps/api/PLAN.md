@@ -57,6 +57,9 @@ Do this before adding any write endpoints.
 - [ ] Enable CORS for the web app's origin, configured via env (e.g. `CORS_ORIGIN`).
   - Postponed until the web app calls the API. Add it in `setupApp()`.
 - [x] Decide on a global prefix (`/api`), and update `requests/*.http` and the e2e tests to match.
+- [x] OpenAPI spec for the web app's generated client.
+  - `@nestjs/swagger` builds the document. Zod schemas registered in `openApiRegistry` (`src/common/openapi.ts`) become named components via `z.toJSONSchema`, and controllers reference them with `schemaRef()`.
+  - Swagger UI is served at `/api/docs` and the raw spec at `/api/docs-json`. With the API running, the web app's `npm run api:generate` turns the spec into a typed client with orval.
 
 ## Phase 4: Schema conventions
 
