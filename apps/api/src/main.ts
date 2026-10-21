@@ -17,7 +17,12 @@ async function bootstrap() {
 
   const config = app.get<ConfigService<Env, true>>(ConfigService);
 
-  await app.listen(config.get('PORT', { infer: true }));
+  try {
+    await app.listen(config.get('PORT', { infer: true }));
+  } catch (error) {
+    await app.close();
+    throw error;
+  }
 }
 
 await bootstrap();
