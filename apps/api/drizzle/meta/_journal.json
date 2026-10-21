@@ -22,6 +22,13 @@
       "when": 1792575003126,
       "tag": "0002_rename_lodge_to_lodges",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792583687725,
+      "tag": "0003_lodge_name_max_length",
+      "breakpoints": true
     }
   ]
 }
