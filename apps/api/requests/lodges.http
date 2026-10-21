@@ -3,3 +3,15 @@
 ### Get all lodges
 GET {{baseUrl}}
 Accept: application/json
+
+### Get a lodge by id
+GET {{baseUrl}}/31252ac4-6475-4e3d-aced-ab1878a28a33
+Accept: application/json
+
+### Create a lodge
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "name": "New Lodge"
+}
