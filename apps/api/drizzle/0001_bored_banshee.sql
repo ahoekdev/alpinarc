@@ -1,0 +1,1 @@
+ALTER TABLE "lodge" ALTER COLUMN "name" SET NOT NULL;
