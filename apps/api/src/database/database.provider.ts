@@ -1,10 +1,10 @@
 import { ConfigService } from '@nestjs/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import type { Env } from '../config/env.js';
+import type { Env } from '../config/env.schema.js';
 import * as schema from './schema.js';
 
-export const DATABASE = 'DATABASE';
+export const DATABASE = Symbol('DATABASE');
 
 export const databaseProvider = {
   provide: DATABASE,

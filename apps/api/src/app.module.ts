@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { validateEnv } from './config/env.js';
 import { LodgesModule } from './lodges/lodges.module.js';
 
 @Module({
@@ -7,6 +8,7 @@ import { LodgesModule } from './lodges/lodges.module.js';
     ConfigModule.forRoot({
       envFilePath: ['.env.development.local'],
       isGlobal: true,
+      validate: validateEnv,
     }),
     LodgesModule,
   ],

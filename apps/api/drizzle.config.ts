@@ -1,14 +1,15 @@
-import dotenv from 'dotenv';
+import { existsSync } from 'node:fs';
 import { defineConfig } from 'drizzle-kit';
+import { validateDatabaseEnv } from './src/config/env.js';
 
-dotenv.config({ path: './.env.development.local' });
+const envFile = './.env.development.local';
 
-const { DATABASE_URL } = process.env;
-
-// TODO Remove this check once we have env validation in place
-if (!DATABASE_URL) {
-  throw new Error('No DATABASE_URL found in .env file');
+// The file is optional so CI can provide the variables directly
+if (existsSync(envFile)) {
+  process.loadEnvFile(envFile);
 }
+
+const { DATABASE_URL } = validateDatabaseEnv(process.env);
 
 export default defineConfig({
   dialect: 'postgresql',
