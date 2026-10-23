@@ -12,8 +12,6 @@ Phases 1 and 2 are done, and Phase 3 is done except for CORS. Next:
 3. **Phase 4: timestamps.** This is cheap while `lodges` has almost no data. Doing it after Phase 5 means the migration also gets tested on the test database.
 4. **Phase 6: CI**, running lint, build, unit tests and e2e tests against a Postgres service container.
 5. **CORS (Phase 3)** once the web app starts calling the API, so the configuration can be tested against a real client.
-   - Phase 8 proxies the web app's browser requests through Next.js, so the API may not need CORS at all.
-6. **Phase 8: admin authentication**, after Phase 5, because it adds tables and tests that should not run against the dev database.
 
 Update the README (Phase 7) along the way, as the setup steps change.
 
@@ -103,82 +101,6 @@ Update this incrementally alongside the other phases instead of saving it for th
   - migrations;
   - dev, test and lint commands;
   - project conventions.
-
-## Phase 8: Admin authentication
-
-Goal: anonymous users can read lodges, and only admins can create or update them.
-Admins sign in with an email and password and get a session cookie. No JWTs, no public sign-up.
-
-Built on `@nestjs/authentication` and `@nestjs/authorization` ([docs](https://docs.nestjs.com/security/authentication)).
-Both are 0.1.x and only weeks old, so pin exact versions and keep everything auth-related in `src/auth/`, `src/users/` and the policies.
-Better Auth is the fallback if they prove unstable.
-
-How the pieces fit:
-
-- `AuthenticationModule` registers a global guard: every route requires a signed-in user unless it is `@Public()`.
-- `AuthorizationModule` denies any handler that has no `@Can()`, `@Can.Anyone()` or `@Public()`, so a new endpoint is closed until it states who may call it.
-- A session is a random 256-bit token in an `HttpOnly`, `Secure`, `SameSite=Lax` cookie (`__Host-sid`). Only its SHA-256 hash is stored, in a `sessions` table. Signing out deletes the row.
-- Cookie-authenticated `POST`/`PATCH`/`DELETE` requests from another origin are ignored, and cross-origin sign-ins get a 403 (CSRF protection). Requests without `Origin` and `Sec-Fetch-Site` headers (curl, server-to-server) are not affected.
-- Sessions need no secret in env. With `NODE_ENV=production` the module refuses to start until a database session store is registered.
-
-### Step 1: Users and sessions
-
-- [ ] Install `@nestjs/authentication` and `@nestjs/authorization` with exact versions. `@nestjs/websockets` and `@nestjs/microservices` are optional peers and not needed.
-- [ ] Add a `users` table:
-  - `id` (uuid);
-  - `email` (`varchar(255)`, unique, stored lowercased);
-  - `password_hash` (`text`);
-  - `role` (`'admin'`, as a `pgEnum` so more roles can be added later);
-  - `created_at` and `updated_at`.
-- [ ] Add the `sessions` table from the docs' Drizzle schema (`id`, `user_id`, `created_at`, `expires_at`, `last_active_at`, `mfa`, `metadata`, plus the `user_id` and `expires_at` indexes).
-  - Keep `user_id` as `text` without a foreign key: the store contract tests create sessions for random user ids. Delete a user's sessions in code when deleting the user.
-- [ ] Generate the migration with `npm run db:generate -- --name add_users_and_sessions`.
-- [ ] `UsersRepository` (`src/users/`) with `findById`, `findCredentials(email)` and `create`.
-  - Only a `User` without the password hash leaves the repository, so a user can be returned from a route or logged safely.
-  - Declare the `User` type once for the package with `declare module '@nestjs/authentication' { interface AuthenticationTypes { user: User } }`.
-
-### Step 2: Sign-in and sign-out
-
-- [ ] `DrizzleSessionStore` (`src/auth/`) implementing only `SessionStore`, injecting our existing `DATABASE` provider. Register it with `AuthenticationStorage.registerSource({ sessions: this })`.
-  - Copy the session methods from the docs' `DrizzleAuthenticationStore`: `touchSession` and `deleteSession` must each be a single conditional statement.
-  - Test it with `authenticationStoreContract(create, { contracts: ['sessions'], concurrent: true })` from `@nestjs/authentication/testing`.
-- [ ] `SessionAuth extends SessionCookieProvider<User>`, which loads the user in `validate()`.
-- [ ] `AuthenticationModule.forRoot({ session: { absoluteTtl, idleTtl } })` in `AppModule`, e.g. 7 days absolute and 1 day idle (the defaults).
-- [ ] `AuthController`, validated with our `ZodValidationPipe` and documented in Swagger:
-  - `POST /api/auth/sign-in` (`@Public()`): `CredentialsService.verify()` checks the password with `PasswordHasher` (scrypt, constant time even for unknown emails), then `SignInService.signIn(user.id, { method: 'password' })` sets the cookie. Wrong email or password: 401.
-  - `POST /api/auth/sign-out`: `SignInService.signOut()`.
-  - `GET /api/me`: `@CurrentUser()`, so the web app can tell whether an admin is signed in.
-- [ ] Rate-limit sign-in with `@nestjs/throttler` (the docs' "Rate-limit sign-in" section).
-- [ ] `npm run admin:create` script that creates an admin from an email and a password prompt, using `PasswordHasher` and `UsersRepository` in a Nest standalone application context (`NestFactory.createApplicationContext`), run from the build.
-
-### Step 3: Lock down the lodge endpoints
-
-- [ ] `AuthorizationModule` in `AppModule`, and a `LodgePolicy` (`src/lodges/lodge.policy.ts`) whose `create` and `update` return `user?.role === 'admin'`.
-- [ ] `GET /api/lodges` and `GET /api/lodges/:id`: `@Public()`.
-- [ ] `POST /api/lodges`: `@Can(LodgePolicy, 'create')`. Anonymous: 401. Signed in but not an admin: 403.
-- [ ] Add `PATCH /api/lodges/:id` with `@Can(LodgePolicy, 'update')`, an `updateLodgeSchema` (`createLodgeSchema.partial()`, registered as `UpdateLodge`) and `LodgesService.update()` returning 404 for unknown ids.
-- [ ] OpenAPI: add a cookie security scheme (`DocumentBuilder.addCookieAuth('__Host-sid')`), mark the write endpoints with it, and document their 401 and 403 responses.
-- [ ] Add sign-in and lodge write requests to `requests/*.http`.
-
-### Step 4: Tests
-
-- [ ] e2e helper that creates an admin directly through `UsersRepository` and signs in through `POST /api/auth/sign-in`, returning the cookie. Override `PasswordHasher` with `new PasswordHasher({ logN: 10 })` so tests stay fast.
-- [ ] Lodge e2e tests: anonymous `GET` is 200, anonymous `POST`/`PATCH` is 401, admin `POST`/`PATCH` succeeds.
-- [ ] Auth e2e tests: wrong password is 401, sign-out ends the session, `GET /api/me` without a cookie is 401.
-- [ ] Unit test `LodgePolicy`.
-
-### Step 5: Web app
-
-- [ ] Proxy `/api/:path*` to the API with `rewrites()` in `next.config.ts`, so the browser only talks to the web app's origin. The session cookie then belongs to that origin, and the API's cross-origin check passes without CORS or `session.trustedOrigins`.
-- [ ] `/login` page that posts to `/api/auth/sign-in` through the proxy.
-- [ ] Admin pages (create and edit lodge): server components and server actions forward the incoming `cookie` header to the API. Redirect to `/login` when `GET /api/me` returns 401.
-- [ ] Public pages such as `/lodges` stay anonymous and unchanged.
-- [ ] Regenerate the orval client.
-- [ ] Read the Next.js 16 guides in `node_modules/next/dist/docs/` for rewrites, server actions and cookies before writing this (see `apps/web/AGENTS.md`).
-
-### Later
-
-- Password reset by email (`@nestjs/mail`, `email_tokens` table), two-factor authentication for admins, or more roles. Each is a module option plus one store interface.
 
 ## Later (when needed)
 
