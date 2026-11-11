@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Git
+
+- Never commit changes unless the user explicitly asks you to.
+
 ## Running the apps
 
 - The API runs on http://localhost:5033 and the web app on http://localhost:3000. See the README for the start commands.
