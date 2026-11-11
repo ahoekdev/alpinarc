@@ -35,7 +35,7 @@ just api   # http://localhost:5033
 just web   # http://localhost:3000
 ```
 
-The home page shows whether the web app can reach the API's `/health` endpoint.
+The home page shows whether the API and its database are healthy (`/health/live` and `/health/ready`), and lists the lodges with a form to add one.
 
 ## Common tasks
 
@@ -52,8 +52,6 @@ Run `just` to list every recipe.
 
 Migrations live in `api/src/Alpinarc.Api/Data/Migrations/` and are applied explicitly with `just migrate`, never on API startup.
 
+The API tests start their own throwaway Postgres container (Testcontainers), so Docker must be running for `just check` and `just check-api`.
+
 Building the API writes its OpenAPI document to `api/openapi/alpinarc-api.json`. Orval reads that file and generates the typed client into `web/lib/api/generated/`.
-
-## Planning
-
-See [issue #1](https://github.com/ahoekdev/alpinarc/issues/1) for the initialization plan.

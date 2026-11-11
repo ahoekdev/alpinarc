@@ -6,8 +6,11 @@ namespace Alpinarc.Api.Lodges;
 
 // [EndpointName] sets the OpenAPI operation id, which Orval turns into the
 // web client's function names (listLodges, getLodge, createLodge).
+// [Produces]/[Consumes] limit the OpenAPI document to JSON; without them it also
+// lists text/plain and text/json, and Orval generates a duplicate type for each.
 [ApiController]
 [Route("lodges")]
+[Produces("application/json")]
 public class LodgesController(AlpinarcDbContext db) : ControllerBase
 {
     [HttpGet]
@@ -44,6 +47,7 @@ public class LodgesController(AlpinarcDbContext db) : ControllerBase
 
     [HttpPost]
     [EndpointName("CreateLodge")]
+    [Consumes("application/json")]
     [ProducesResponseType<LodgeResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<LodgeResponse>> Create(

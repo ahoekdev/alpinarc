@@ -1,18 +1,18 @@
-@Alpinarc.Api_HostAddress = http://localhost:5033
+@baseUrl = http://localhost:5033
 
-GET {{Alpinarc.Api_HostAddress}}/health
-
-###
-
-GET {{Alpinarc.Api_HostAddress}}/health/ready
+GET {{baseUrl}}/health
 
 ###
 
-GET {{Alpinarc.Api_HostAddress}}/lodges
+GET {{baseUrl}}/health/ready
 
 ###
 
-POST {{Alpinarc.Api_HostAddress}}/lodges
+GET {{baseUrl}}/lodges
+
+###
+
+POST {{baseUrl}}/lodges
 Content-Type: application/json
 
 {
@@ -21,6 +21,6 @@ Content-Type: application/json
 
 ###
 
-GET {{Alpinarc.Api_HostAddress}}/openapi/v1.json
+GET {{baseUrl}}/openapi/v1.json
 
 ###
