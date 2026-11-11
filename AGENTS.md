@@ -4,6 +4,10 @@
 
 - Never commit changes unless the user explicitly asks you to.
 
+## C# style
+
+- Use modern C# syntax (the API targets .NET 10 with `LangVersion` latest) and follow the IDE's style suggestions.
+
 ## Running the apps
 
 - The API runs on http://localhost:5033 and the web app on http://localhost:3000. See the README for the start commands.
