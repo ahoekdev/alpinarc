@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiFetch } from "@/lib/api/fetcher";
+import { apiFetchText } from "@/lib/api/fetcher";
 import styles from "./api-health.module.css";
 
 type CheckResult = "healthy" | "unhealthy" | "unreachable";
@@ -9,10 +9,11 @@ type ApiStatus = "checking" | "healthy" | "unreachable";
 // "unknown": the API itself can't be reached, so we can't tell anything about the database.
 type DbStatus = "checking" | "healthy" | "unhealthy" | "unknown";
 
-// The health endpoints are not part of the OpenAPI document, so they're called directly.
+// The health endpoints are not part of the OpenAPI document and answer in plain text
+// ("Healthy" / "Unhealthy"), so they're called directly.
 async function check(path: string): Promise<CheckResult> {
   try {
-    const res = await apiFetch<{ status: number; data: string }>(path);
+    const res = await apiFetchText(path);
     if (res.status === 200 && res.data === "Healthy") {
       return "healthy";
     }

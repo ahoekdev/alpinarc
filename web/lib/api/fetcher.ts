@@ -1,8 +1,8 @@
 const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5033";
 
 /**
- * Fetch wrapper used by the Orval-generated client and by hand-written calls.
- * Prefixes the API base URL and parses JSON responses.
+ * Fetch wrapper for the API's JSON endpoints, used by the Orval-generated client.
+ * Prefixes the API base URL and parses the JSON body. Throws if the body is not JSON.
  */
 export async function apiFetch<T>(
   url: string,
@@ -10,14 +10,28 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const response = await fetch(`${baseUrl}${url}`, options);
 
-  const contentType = response.headers.get("content-type") ?? "";
-  const body = contentType.includes("application/json")
-    ? await response.json()
-    : await response.text();
+  // 204 No Content has no body to parse.
+  const data = response.status === 204 ? undefined : await response.json();
 
   return {
-    data: body,
+    data,
     status: response.status,
     headers: response.headers,
   } as T;
+}
+
+/**
+ * Fetch wrapper for the API's plain-text endpoints, such as the health checks.
+ */
+export async function apiFetchText(
+  url: string,
+  options?: RequestInit,
+): Promise<{ data: string; status: number; headers: Headers }> {
+  const response = await fetch(`${baseUrl}${url}`, options);
+
+  return {
+    data: await response.text(),
+    status: response.status,
+    headers: response.headers,
+  };
 }
