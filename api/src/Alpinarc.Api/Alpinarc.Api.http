@@ -1,0 +1,9 @@
+@Alpinarc.Api_HostAddress = http://localhost:5033
+
+GET {{Alpinarc.Api_HostAddress}}/health
+
+###
+
+GET {{Alpinarc.Api_HostAddress}}/openapi/v1.json
+
+###

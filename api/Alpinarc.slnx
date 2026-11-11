@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Alpinarc.Api/Alpinarc.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Alpinarc.Api.Tests/Alpinarc.Api.Tests.csproj" />
+  </Folder>
+</Solution>

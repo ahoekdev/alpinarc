@@ -11,6 +11,44 @@ A web application with a Next.js frontend and a .NET backend.
 
 Local services such as Postgres run through Docker Compose.
 
-## Status
+## Prerequisites
 
-The project is being set up. See [issue #1](https://github.com/ahoekdev/alpinarc/issues/1) for the initialization plan.
+- .NET SDK 10 (pinned in `api/global.json`)
+- Node.js 26 and npm
+- Docker
+- [just](https://github.com/casey/just) (command runner)
+
+## Getting started
+
+Run these from the repo root:
+
+```bash
+just setup   # create .env files, install npm and NuGet packages
+just db      # start Postgres
+```
+
+Then run each app in its own terminal:
+
+```bash
+just api   # http://localhost:5033
+just web   # http://localhost:3000
+```
+
+The home page shows whether the web app can reach the API's `/health` endpoint.
+
+## Common tasks
+
+Run `just` to list every recipe.
+
+| Task | Command |
+|------|---------|
+| Run all CI checks | `just check` (or `just check-api`, `just check-web`) |
+| Format API and web code | `just format` |
+| Regenerate API client | `just generate-api` |
+| Stop Postgres | `just db-down` |
+
+Building the API writes its OpenAPI document to `api/openapi/alpinarc-api.json`. Orval reads that file and generates the typed client into `web/lib/api/generated/`.
+
+## Planning
+
+See [issue #1](https://github.com/ahoekdev/alpinarc/issues/1) for the initialization plan.

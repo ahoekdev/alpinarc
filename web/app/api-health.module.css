@@ -1,0 +1,16 @@
+.status {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-family: var(--font-geist-mono);
+  background: #eee;
+}
+
+.status[data-status="healthy"] {
+  background: #d1fadf;
+  color: #05603a;
+}
+
+.status[data-status="unreachable"] {
+  background: #fee4e2;
+  color: #912018;
+}
