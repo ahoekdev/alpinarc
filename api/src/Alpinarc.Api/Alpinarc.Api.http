@@ -4,6 +4,23 @@ GET {{Alpinarc.Api_HostAddress}}/health
 
 ###
 
+GET {{Alpinarc.Api_HostAddress}}/health/ready
+
+###
+
+GET {{Alpinarc.Api_HostAddress}}/lodges
+
+###
+
+POST {{Alpinarc.Api_HostAddress}}/lodges
+Content-Type: application/json
+
+{
+  "name": "Refuge du Goûter"
+}
+
+###
+
 GET {{Alpinarc.Api_HostAddress}}/openapi/v1.json
 
 ###
