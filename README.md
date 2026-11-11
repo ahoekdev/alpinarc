@@ -23,8 +23,9 @@ Local services such as Postgres run through Docker Compose.
 Run these from the repo root:
 
 ```bash
-just setup   # create .env files, install npm and NuGet packages
-just db      # start Postgres
+just setup     # create .env files, install npm, NuGet packages and .NET tools
+just db        # start Postgres
+just migrate   # apply database migrations
 ```
 
 Then run each app in its own terminal:
@@ -46,6 +47,10 @@ Run `just` to list every recipe.
 | Format API and web code | `just format` |
 | Regenerate API client | `just generate-api` |
 | Stop Postgres | `just db-down` |
+| Apply database migrations | `just migrate` |
+| Create a database migration | `just migration NAME` |
+
+Migrations live in `api/src/Alpinarc.Api/Data/Migrations/` and are applied explicitly with `just migrate`, never on API startup.
 
 Building the API writes its OpenAPI document to `api/openapi/alpinarc-api.json`. Orval reads that file and generates the typed client into `web/lib/api/generated/`.
 

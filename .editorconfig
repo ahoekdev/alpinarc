@@ -11,6 +11,10 @@ indent_size = 2
 [*.{cs,csx}]
 indent_size = 4
 
+# EF Core migrations are generated (with a UTF-8 BOM); keep dotnet format and analyzers off them
+[api/src/Alpinarc.Api/Data/Migrations/*.cs]
+generated_code = true
+
 [*.{csproj,props,targets,slnx}]
 indent_size = 2
 
