@@ -16,42 +16,36 @@ Local services such as Postgres run through Docker Compose.
 - .NET SDK 10 (pinned in `api/global.json`)
 - Node.js 26 and npm
 - Docker
+- [just](https://github.com/casey/just) (command runner)
 
 ## Getting started
 
-1. Start Postgres:
+Run these from the repo root:
 
-   ```bash
-   cp .env.example .env
-   docker compose up -d
-   ```
+```bash
+just setup   # create .env files, install npm and NuGet packages
+just db      # start Postgres
+```
 
-2. Run the API (http://localhost:5033):
+Then run each app in its own terminal:
 
-   ```bash
-   cd api
-   dotnet run --project src/Alpinarc.Api --launch-profile http
-   ```
-
-3. Run the web app (http://localhost:3000):
-
-   ```bash
-   cd web
-   cp .env.example .env.local
-   npm install
-   npm run dev
-   ```
+```bash
+just api   # http://localhost:5033
+just web   # http://localhost:3000
+```
 
 The home page shows whether the web app can reach the API's `/health` endpoint.
 
 ## Common tasks
 
+Run `just` to list every recipe.
+
 | Task | Command |
 |------|---------|
-| API tests | `cd api && dotnet test` |
-| API formatting | `cd api && dotnet format` |
-| Web lint / typecheck / format | `cd web && npm run lint`, `npm run typecheck`, `npm run format` |
-| Regenerate API client | `cd api && dotnet build`, then `cd web && npm run generate:api` |
+| Run all CI checks | `just check` (or `just check-api`, `just check-web`) |
+| Format API and web code | `just format` |
+| Regenerate API client | `just generate-api` |
+| Stop Postgres | `just db-down` |
 
 Building the API writes its OpenAPI document to `api/openapi/alpinarc-api.json`. Orval reads that file and generates the typed client into `web/lib/api/generated/`.
 
