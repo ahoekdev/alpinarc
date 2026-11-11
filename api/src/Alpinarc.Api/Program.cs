@@ -1,6 +1,13 @@
+using Alpinarc.Api.Data;
+using Microsoft.EntityFrameworkCore;
+
 const string WebCorsPolicy = "Web";
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AlpinarcDbContext>(options => options
+    .UseNpgsql(builder.Configuration.GetConnectionString("Alpinarc"))
+    .UseSnakeCaseNamingConvention());
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
