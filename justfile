@@ -4,12 +4,13 @@
 default:
     @just --list
 
-# First-time setup: env files, npm packages and NuGet packages
+# First-time setup: env files, npm packages, NuGet packages and .NET tools
 setup:
     [ -f .env ] || cp .env.example .env
     [ -f web/.env.local ] || cp web/.env.example web/.env.local
     npm --prefix web install
     dotnet restore api/Alpinarc.slnx
+    cd api && dotnet tool restore
 
 # Start Postgres in the background
 db:
@@ -18,6 +19,16 @@ db:
 # Stop Postgres (data is kept in the named volume)
 db-down:
     docker compose down
+
+# Apply database migrations to the local database
+[working-directory('api')]
+migrate:
+    dotnet ef database update --project src/Alpinarc.Api
+
+# Create a new database migration, e.g. `just migration AddHuts`
+[working-directory('api')]
+migration NAME:
+    dotnet ef migrations add {{NAME}} --project src/Alpinarc.Api --output-dir Data/Migrations
 
 # Run the API on http://localhost:5033
 api:

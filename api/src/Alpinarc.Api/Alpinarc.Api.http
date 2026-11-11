@@ -1,9 +1,26 @@
-@Alpinarc.Api_HostAddress = http://localhost:5033
+@baseUrl = http://localhost:5033
 
-GET {{Alpinarc.Api_HostAddress}}/health
+GET {{baseUrl}}/health
 
 ###
 
-GET {{Alpinarc.Api_HostAddress}}/openapi/v1.json
+GET {{baseUrl}}/health/ready
+
+###
+
+GET {{baseUrl}}/lodges
+
+###
+
+POST {{baseUrl}}/lodges
+Content-Type: application/json
+
+{
+  "name": "Refuge du Goûter"
+}
+
+###
+
+GET {{baseUrl}}/openapi/v1.json
 
 ###
