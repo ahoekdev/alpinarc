@@ -1,8 +1,15 @@
+.health {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .status {
   padding: 0.5rem 1rem;
   border-radius: 999px;
   font-family: var(--font-geist-mono);
+  /* Set the text colour too: the inherited page colour is near-white in dark mode. */
   background: #eee;
+  color: #344054;
 }
 
 .status[data-status="healthy"] {
@@ -10,7 +17,8 @@
   color: #05603a;
 }
 
-.status[data-status="unreachable"] {
+.status[data-status="unreachable"],
+.status[data-status="unhealthy"] {
   background: #fee4e2;
   color: #912018;
 }
