@@ -1,0 +1,14 @@
+# Root environment file used by docker compose
+.env
+
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+
+# Editors and OS
+.idea/
+.DS_Store
