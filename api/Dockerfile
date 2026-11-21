@@ -36,5 +36,7 @@ COPY --from=build /app .
 USER $APP_UID
 
 # Railway sets PORT; without it (e.g. `docker run`) the API listens on 8080.
+# CMD rather than ENTRYPOINT, so another command, such as the pre-deploy command
+# /app/efbundle, replaces it completely instead of being passed to it as arguments.
 ENV PORT=8080
-ENTRYPOINT ["sh", "-c", "ASPNETCORE_HTTP_PORTS=$PORT exec dotnet Alpinarc.Api.dll"]
+CMD ["sh", "-c", "ASPNETCORE_HTTP_PORTS=$PORT exec dotnet Alpinarc.Api.dll"]
