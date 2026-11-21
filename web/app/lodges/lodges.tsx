@@ -9,7 +9,6 @@ import type {
   LodgeResponse,
   ValidationProblemDetails,
 } from "@/lib/api/generated/alpinarcApiV1.schemas";
-import styles from "./lodges.module.css";
 
 // Turns the API's 400 response into one line, e.g. "The Name field is required."
 function validationMessage(problem: ValidationProblemDetails): string {
@@ -72,10 +71,8 @@ export function Lodges() {
   }
 
   return (
-    <section className={styles.lodges}>
-      <h2>Lodges</h2>
-
-      <form className={styles.form} onSubmit={handleSubmit}>
+    <>
+      <form onSubmit={handleSubmit}>
         <input
           aria-label="Lodge name"
           placeholder="Lodge name"
@@ -88,35 +85,32 @@ export function Lodges() {
           Add lodge
         </button>
       </form>
-      {saveError && (
-        <p className={styles.error} role="alert">
-          {saveError}
-        </p>
-      )}
+      {saveError && <p role="alert">{saveError}</p>}
 
       <LodgeList list={list} />
-    </section>
+    </>
   );
 }
 
 function LodgeList({ list }: { list: LodgeListState }) {
   if (list.status === "error") {
-    return <p className={styles.error}>{list.message}</p>;
+    return <p>{list.message}</p>;
   }
   if (list.status === "loading") {
-    return <p className={styles.muted}>Loading lodges…</p>;
+    return <p>Loading lodges…</p>;
   }
   if (list.lodges.length === 0) {
-    return <p className={styles.muted}>No lodges yet.</p>;
+    return <p>No lodges yet.</p>;
   }
   return (
-    <ul className={styles.list}>
+    <ul>
       {list.lodges.map((lodge) => (
         <li key={lodge.id}>
-          <span>{lodge.name}</span>
-          <time className={styles.muted} dateTime={lodge.createdAt}>
+          {lodge.name} (
+          <time dateTime={lodge.createdAt}>
             {new Date(lodge.createdAt).toLocaleDateString()}
           </time>
+          )
         </li>
       ))}
     </ul>

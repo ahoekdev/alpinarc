@@ -35,7 +35,7 @@ just api   # http://localhost:5033
 just web   # http://localhost:3000
 ```
 
-The home page shows whether the API and its database are healthy (`/health/live` and `/health/ready`), and lists the lodges with a form to add one.
+The lodges page (http://localhost:3000/lodges) lists the lodges and has a form to add one. The web app doesn't show health; check it on the API at `/health/live` and `/health/ready`.
 
 ## Common tasks
 

@@ -19,19 +19,3 @@ export async function apiFetch<T>(
     headers: response.headers,
   } as T;
 }
-
-/**
- * Fetch wrapper for the API's plain-text endpoints, such as the health checks.
- */
-export async function apiFetchText(
-  url: string,
-  options?: RequestInit,
-): Promise<{ data: string; status: number; headers: Headers }> {
-  const response = await fetch(`${baseUrl}${url}`, options);
-
-  return {
-    data: await response.text(),
-    status: response.status,
-    headers: response.headers,
-  };
-}
