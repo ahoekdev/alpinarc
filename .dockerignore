@@ -1,0 +1,14 @@
+# Build context for web/Dockerfile, which builds from the repo root.
+# The API image builds from api/ and uses api/.dockerignore instead.
+# Only web/ and the OpenAPI document are needed.
+*
+!web
+!api/openapi
+
+web/node_modules
+web/.next
+web/.env*
+web/lib/api/generated
+web/*.tsbuildinfo
+web/next-env.d.ts
+web/Dockerfile

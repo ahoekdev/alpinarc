@@ -1,5 +1,6 @@
 using Alpinarc.Api.Data;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 const string WebCorsPolicy = "Web";
@@ -16,6 +17,17 @@ builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<AlpinarcDbContext>(tags: [ReadyTag]);
 
+// Railway terminates HTTPS at its edge and forwards plain HTTP. Reading X-Forwarded-Proto
+// makes the request count as HTTPS again, so UseHttpsRedirection doesn't redirect it in a
+// loop. Railway's proxy addresses aren't fixed, so the known networks and proxies are
+// cleared to trust it. The API is only reachable through that proxy.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
 {
@@ -26,6 +38,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
 {
