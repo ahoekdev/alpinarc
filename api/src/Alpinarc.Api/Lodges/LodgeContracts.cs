@@ -7,8 +7,10 @@ namespace Alpinarc.Api.Lodges;
 
 public sealed class CreateLodgeRequest
 {
-    // [Required] also rejects empty and whitespace-only strings.
+    // [Required] also rejects empty and whitespace-only strings. [MinLength(1)] only adds
+    // minLength to the OpenAPI document, for the generated Zod schema.
     [Required]
+    [MinLength(1)]
     [MaxLength(200)]
     public required string Name { get; init; }
 }

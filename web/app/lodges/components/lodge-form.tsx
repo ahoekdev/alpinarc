@@ -1,45 +1,54 @@
 "use client";
 
-import { useState, type SubmitEvent } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { getListLodgesQueryKey, useCreateLodge } from "@/lib/api/generated";
+import type { CreateLodgeRequest } from "@/lib/api/generated/alpinarcApiV1.schemas";
+import {
+  CreateLodgeBody,
+  createLodgeBodyNameMax,
+} from "@/lib/api/generated/index.zod";
 
 export function LodgeForm() {
-  const [name, setName] = useState("");
-
   const queryClient = useQueryClient();
 
   const createLodge = useCreateLodge({
     mutation: {
-      onSuccess: () => {
-        setName("");
-
-        return queryClient.invalidateQueries({
-          queryKey: getListLodgesQueryKey(),
-        });
-      },
+      onSuccess: () =>
+        queryClient.invalidateQueries({ queryKey: getListLodgesQueryKey() }),
     },
   });
 
-  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    createLodge.mutate({ data: { name } });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(CreateLodgeBody),
+    defaultValues: { name: "" },
+  });
+
+  function onSubmit(data: CreateLodgeRequest) {
+    createLodge.mutate({ data }, { onSuccess: () => reset() });
   }
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <input
           aria-label="Lodge name"
           placeholder="Lodge name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          maxLength={200}
+          maxLength={createLodgeBodyNameMax}
           required
+          aria-invalid={errors.name ? true : undefined}
+          {...register("name")}
         />
         <button type="submit" disabled={createLodge.isPending}>
           Add lodge
         </button>
+        {errors.name && <p>{errors.name.message}</p>}
       </form>
       {createLodge.isError && (
         <p role="alert">There was a problem saving the lodge.</p>
