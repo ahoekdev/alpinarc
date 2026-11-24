@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using Alpinarc.Api.Lodges;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Alpinarc.Api.Tests;
 
@@ -41,6 +42,22 @@ public class LodgesEndpointTests(ApiFactory factory)
             "/lodges", new StringContent(json, Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData(null)]
+    public async Task Create_InvalidName_KeysErrorByJsonPropertyName(string? name)
+    {
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/lodges", new { name });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var problem = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+        Assert.NotNull(problem);
+        Assert.Contains("name", problem.Errors.Keys);
     }
 
     [Theory]

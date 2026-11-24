@@ -1,10 +1,10 @@
 import { defineConfig } from "orval";
 
+const input = { target: "../api/openapi/alpinarc-api.json" };
+
 export default defineConfig({
   api: {
-    input: {
-      target: "../api/openapi/alpinarc-api.json",
-    },
+    input,
     output: {
       mode: "tags-split",
       target: "lib/api/generated",
@@ -19,6 +19,16 @@ export default defineConfig({
           forceSuccessResponse: true,
         },
       },
+    },
+  },
+  apiZod: {
+    input,
+    output: {
+      mode: "tags-split",
+      target: "lib/api/generated",
+      client: "zod",
+      fileExtension: ".zod.ts",
+      formatter: "prettier",
     },
   },
 });
