@@ -8,13 +8,15 @@ export default defineConfig({
     output: {
       mode: "tags-split",
       target: "lib/api/generated",
-      client: "fetch",
+      client: "react-query",
+      httpClient: "fetch",
       clean: true,
       formatter: "prettier",
+      baseUrl: { runtime: "process.env.NEXT_PUBLIC_API_URL" },
       override: {
-        mutator: {
-          path: "lib/api/fetcher.ts",
-          name: "apiFetch",
+        fetch: {
+          includeHttpResponseReturnType: false,
+          forceSuccessResponse: true,
         },
       },
     },
