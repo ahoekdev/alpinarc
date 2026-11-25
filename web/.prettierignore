@@ -1,4 +1,4 @@
 .next
 node_modules
-lib/api/generated
+lib/api/__generated__
 package-lock.json

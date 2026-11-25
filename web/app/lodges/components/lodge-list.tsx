@@ -1,9 +1,15 @@
 "use client";
 
-import { EmptyState } from "@/components/empty-state";
-import { ErrorState } from "@/components/error-state";
-import { LoadingState } from "@/components/loading-state";
-import { useListLodges } from "@/lib/api/generated";
+import { EmptyState } from "@/components/ui/state/empty-state";
+import { ErrorState } from "@/components/ui/state/error-state";
+import {
+  List,
+  ListItem,
+  ListItemContent,
+  ListItemMeta,
+} from "@/components/ui/list/list";
+import { LoadingState } from "@/components/ui/state/loading-state";
+import { useListLodges } from "@/lib/api/__generated__";
 
 const entityName = "lodges";
 
@@ -23,16 +29,17 @@ export function LodgeList() {
   }
 
   return (
-    <ul>
+    <List>
       {lodges.map((lodge) => (
-        <li key={lodge.id}>
-          {lodge.name} (
-          <time dateTime={lodge.createdAt}>
-            {new Date(lodge.createdAt).toLocaleDateString()}
-          </time>
-          )
-        </li>
+        <ListItem key={lodge.id}>
+          <ListItemContent>{lodge.name}</ListItemContent>
+          <ListItemMeta>
+            <time dateTime={lodge.createdAt}>
+              {new Date(lodge.createdAt).toLocaleDateString()}
+            </time>
+          </ListItemMeta>
+        </ListItem>
       ))}
-    </ul>
+    </List>
   );
 }
