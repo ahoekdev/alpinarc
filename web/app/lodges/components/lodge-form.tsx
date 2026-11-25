@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button/button";
 import { Field } from "@/components/ui/field/field";
 import { Input } from "@/components/ui/input/input";
 import { getListLodgesQueryKey, useCreateLodge } from "@/lib/api/__generated__";
+import { getFieldError } from "@/lib/api/problem-details";
 import type { CreateLodgeRequest } from "@/lib/api/__generated__/alpinarcApiV1.schemas";
 import {
   CreateLodgeBody,
@@ -28,6 +29,7 @@ export function LodgeForm() {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(CreateLodgeBody),
@@ -35,14 +37,27 @@ export function LodgeForm() {
   });
 
   function onSubmit(data: CreateLodgeRequest) {
-    createLodge.mutate({ data }, { onSuccess: () => reset() });
+    createLodge.mutate(
+      { data },
+      {
+        onSuccess: () => reset(),
+        // Show the API's message on the field, e.g. when the name is taken.
+        // React Hook Form clears it again once the name is edited.
+        onError: (error) => {
+          const message = getFieldError(error, "name");
+          if (message) {
+            setError("name", { message });
+          }
+        },
+      },
+    );
   }
 
   return (
     <Form
       onSubmit={handleSubmit(onSubmit)}
       error={
-        createLodge.isError
+        createLodge.isError && !getFieldError(createLodge.error, "name")
           ? "There was a problem saving the lodge."
           : undefined
       }

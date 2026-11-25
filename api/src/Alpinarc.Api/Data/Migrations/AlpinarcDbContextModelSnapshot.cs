@@ -53,6 +53,171 @@ namespace Alpinarc.Api.Data.Migrations
 
                     b.ToTable("lodges", (string)null);
                 });
+
+            modelBuilder.Entity("Alpinarc.Api.Stages.Stage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuidv7()");
+
+                    b.Property<int>("AscentMeters")
+                        .HasColumnType("integer")
+                        .HasColumnName("ascent_meters");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("DescentMeters")
+                        .HasColumnType("integer")
+                        .HasColumnName("descent_meters");
+
+                    b.Property<int>("DistanceMeters")
+                        .HasColumnType("integer")
+                        .HasColumnName("distance_meters");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("integer")
+                        .HasColumnName("duration_minutes");
+
+                    b.Property<Guid>("FromLodgeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("from_lodge_id");
+
+                    b.Property<Guid>("ToLodgeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("to_lodge_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_stages");
+
+                    b.HasIndex("ToLodgeId")
+                        .HasDatabaseName("ix_stages_to_lodge_id");
+
+                    b.HasIndex("FromLodgeId", "ToLodgeId")
+                        .HasDatabaseName("ix_stages_from_lodge_id_to_lodge_id");
+
+                    b.ToTable("stages", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_stages_ascent_meters", "ascent_meters BETWEEN 0 AND 10000");
+
+                            t.HasCheckConstraint("ck_stages_descent_meters", "descent_meters BETWEEN 0 AND 10000");
+
+                            t.HasCheckConstraint("ck_stages_different_lodges", "from_lodge_id <> to_lodge_id");
+
+                            t.HasCheckConstraint("ck_stages_distance_meters", "distance_meters BETWEEN 1 AND 100000");
+
+                            t.HasCheckConstraint("ck_stages_duration_minutes", "duration_minutes BETWEEN 1 AND 1440");
+                        });
+                });
+
+            modelBuilder.Entity("Alpinarc.Api.Tours.Tour", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuidv7()");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tours");
+
+                    b.ToTable("tours", (string)null);
+                });
+
+            modelBuilder.Entity("Alpinarc.Api.Tours.TourStage", b =>
+                {
+                    b.Property<Guid>("TourId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tour_id");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer")
+                        .HasColumnName("position");
+
+                    b.Property<Guid>("StageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("stage_id");
+
+                    b.HasKey("TourId", "Position")
+                        .HasName("pk_tour_stages");
+
+                    b.HasIndex("StageId")
+                        .HasDatabaseName("ix_tour_stages_stage_id");
+
+                    b.ToTable("tour_stages", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_tour_stages_position", "position >= 1");
+                        });
+                });
+
+            modelBuilder.Entity("Alpinarc.Api.Stages.Stage", b =>
+                {
+                    b.HasOne("Alpinarc.Api.Lodges.Lodge", "FromLodge")
+                        .WithMany()
+                        .HasForeignKey("FromLodgeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_stages_lodges_from_lodge_id");
+
+                    b.HasOne("Alpinarc.Api.Lodges.Lodge", "ToLodge")
+                        .WithMany()
+                        .HasForeignKey("ToLodgeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_stages_lodges_to_lodge_id");
+
+                    b.Navigation("FromLodge");
+
+                    b.Navigation("ToLodge");
+                });
+
+            modelBuilder.Entity("Alpinarc.Api.Tours.TourStage", b =>
+                {
+                    b.HasOne("Alpinarc.Api.Stages.Stage", "Stage")
+                        .WithMany()
+                        .HasForeignKey("StageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_tour_stages_stages_stage_id");
+
+                    b.HasOne("Alpinarc.Api.Tours.Tour", "Tour")
+                        .WithMany("Stages")
+                        .HasForeignKey("TourId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_tour_stages_tours_tour_id");
+
+                    b.Navigation("Stage");
+
+                    b.Navigation("Tour");
+                });
+
+            modelBuilder.Entity("Alpinarc.Api.Tours.Tour", b =>
+                {
+                    b.Navigation("Stages");
+                });
 #pragma warning restore 612, 618
         }
     }

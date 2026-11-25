@@ -35,7 +35,7 @@ just api   # http://localhost:5033
 just web   # http://localhost:3000
 ```
 
-The lodges page (http://localhost:3000/lodges) lists the lodges and has a form to add one. The web app doesn't show health; check it on the API at `/health/live` and `/health/ready`.
+The lodges page (http://localhost:3000/lodges) lists the lodges and has a form to add one. The stages page (http://localhost:3000/stages) does the same for stages, the hikes between two lodges. The tours page (http://localhost:3000/tours) lists the tours, which are ordered lists of stages, and links to each tour's stages and totals. The web app doesn't show health; check it on the API at `/health/live` and `/health/ready`.
 
 ## Common tasks
 
@@ -70,7 +70,7 @@ The repo has no Railway config file, so the settings below are the record of how
 | `api` | `ahoekdev/alpinarc`, branch `main` | `/api` | `Dockerfile` | `/api/**` | `/app/efbundle`, timeout 300 s | `/health/ready` | on failure |
 | `web` | `ahoekdev/alpinarc`, branch `main` | `/` | `web/Dockerfile` | `/web/**`, `/api/openapi/**` | none | `/` | on failure |
 
-- Postgres must stay on version 18, because the `lodges` table uses `DEFAULT uuidv7()`. Don't switch the image to `:latest`.
+- Postgres must stay on version 18, because the tables use `DEFAULT uuidv7()`. Don't switch the image to `:latest`.
 - `Postgres` has no public domain or TCP proxy and is only reachable over Railway's private network. `api` (target port 8080) and `web` (target port 3000) have the default `*.up.railway.app` domains.
 - All three services run in EU West (`europe-west4`).
 - Railway only calls the healthcheck while a deploy rolls out, to decide whether to switch traffic to the new version. With `/health/ready`, an API version that can't reach the database never goes live.

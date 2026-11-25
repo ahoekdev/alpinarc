@@ -5,6 +5,240 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/tours": {
+      "get": {
+        "tags": [
+          "Tours"
+        ],
+        "operationId": "ListTours",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TourSummaryResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tours"
+        ],
+        "operationId": "CreateTour",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTourRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTourRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tours/{id}": {
+      "get": {
+        "tags": [
+          "Tours"
+        ],
+        "operationId": "GetTour",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stages": {
+      "get": {
+        "tags": [
+          "Stages"
+        ],
+        "operationId": "ListStages",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StageResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Stages"
+        ],
+        "operationId": "CreateStage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStageRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stages/{id}": {
+      "get": {
+        "tags": [
+          "Stages"
+        ],
+        "operationId": "GetStage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StageResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/lodges": {
       "get": {
         "tags": [
@@ -148,6 +382,80 @@
           }
         }
       },
+      "CreateStageRequest": {
+        "required": [
+          "fromLodgeId",
+          "toLodgeId",
+          "distanceMeters",
+          "ascentMeters",
+          "descentMeters",
+          "durationMinutes"
+        ],
+        "type": "object",
+        "properties": {
+          "fromLodgeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "toLodgeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "distanceMeters": {
+            "maximum": 100000,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "ascentMeters": {
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "descentMeters": {
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "durationMinutes": {
+            "maximum": 1440,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CreateTourRequest": {
+        "required": [
+          "name",
+          "stageIds"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 2000,
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "stageIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "The stages in the tour's order; may be empty, and may hold the same stage more than\nonce. Clients never send positions."
+          }
+        }
+      },
       "LodgeResponse": {
         "required": [
           "id",
@@ -169,6 +477,23 @@
           }
         }
       },
+      "LodgeSummary": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "description": "A lodge as part of another response, such as the start or end of a stage."
+      },
       "ProblemDetails": {
         "type": "object",
         "properties": {
@@ -185,11 +510,9 @@
             ]
           },
           "status": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
@@ -207,6 +530,171 @@
           }
         }
       },
+      "StageResponse": {
+        "required": [
+          "id",
+          "fromLodge",
+          "toLodge",
+          "distanceMeters",
+          "ascentMeters",
+          "descentMeters",
+          "durationMinutes",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fromLodge": {
+            "$ref": "#/components/schemas/LodgeSummary"
+          },
+          "toLodge": {
+            "$ref": "#/components/schemas/LodgeSummary"
+          },
+          "distanceMeters": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ascentMeters": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descentMeters": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TourResponse": {
+        "required": [
+          "id",
+          "name",
+          "description",
+          "createdAt",
+          "stages",
+          "totals"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TourStageResponse"
+            }
+          },
+          "totals": {
+            "$ref": "#/components/schemas/TourTotals"
+          }
+        }
+      },
+      "TourStageResponse": {
+        "required": [
+          "position",
+          "stage"
+        ],
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/StageResponse"
+          }
+        }
+      },
+      "TourSummaryResponse": {
+        "required": [
+          "id",
+          "name",
+          "description",
+          "createdAt",
+          "stageCount",
+          "totals"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stageCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/TourTotals"
+          }
+        }
+      },
+      "TourTotals": {
+        "required": [
+          "distanceMeters",
+          "ascentMeters",
+          "descentMeters",
+          "durationMinutes"
+        ],
+        "type": "object",
+        "properties": {
+          "distanceMeters": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ascentMeters": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "descentMeters": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "Sums over a tour's stages; all 0 for an empty tour. `long`, because a tour\nhas no limit on its number of stages."
+      },
       "ValidationProblemDetails": {
         "type": "object",
         "properties": {
@@ -223,11 +711,9 @@
             ]
           },
           "status": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
@@ -257,6 +743,12 @@
     }
   },
   "tags": [
+    {
+      "name": "Tours"
+    },
+    {
+      "name": "Stages"
+    },
     {
       "name": "Lodges"
     }
