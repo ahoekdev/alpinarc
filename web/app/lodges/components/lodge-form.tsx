@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Form } from "@/components/form/form";
+import { Form } from "@/components/ui/form/form";
 import { Button } from "@/components/ui/button/button";
 import { Field } from "@/components/ui/field/field";
 import { Input } from "@/components/ui/input/input";

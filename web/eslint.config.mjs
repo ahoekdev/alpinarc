@@ -7,7 +7,8 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   prettier,
-  // Only the wrappers in components/ui/ use Base UI; everything else uses them.
+  // Base UI is only used inside the generic components in components/ui/;
+  // the rest of the app uses those components.
   {
     files: ["**/*.{js,jsx,mjs,ts,tsx}"],
     ignores: ["components/ui/**"],
