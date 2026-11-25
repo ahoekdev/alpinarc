@@ -28,3 +28,9 @@ public sealed record LodgeResponse(Guid Id, string Name, DateTimeOffset CreatedA
     /// <summary>For an entity that is already loaded, such as one just saved.</summary>
     public static LodgeResponse From(Lodge lodge) => new(lodge.Id, lodge.Name, lodge.CreatedAt);
 }
+
+/// <summary>A lodge as part of another response, such as the start or end of a stage.</summary>
+public sealed record LodgeSummary(Guid Id, string Name)
+{
+    public static LodgeSummary From(Lodge lodge) => new(lodge.Id, lodge.Name);
+}

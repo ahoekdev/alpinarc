@@ -1,4 +1,6 @@
 using Alpinarc.Api.Lodges;
+using Alpinarc.Api.Stages;
+using Alpinarc.Api.Tours;
 using Microsoft.EntityFrameworkCore;
 
 namespace Alpinarc.Api.Data;
@@ -12,6 +14,10 @@ public sealed class AlpinarcDbContext(DbContextOptions<AlpinarcDbContext> option
     public const string CaseInsensitiveCollation = "case_insensitive";
 
     public DbSet<Lodge> Lodges => Set<Lodge>();
+
+    public DbSet<Stage> Stages => Set<Stage>();
+
+    public DbSet<Tour> Tours => Set<Tour>();
 
     // Each entity is configured in its own IEntityTypeConfiguration<T> class next to the entity.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
