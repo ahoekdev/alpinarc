@@ -16,7 +16,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     // Same major version as docker-compose.yml; uuidv7() needs Postgres 18+.
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:18").Build();
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _postgres.StartAsync();
 
@@ -33,10 +33,12 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // sets a low limit to test it.
         .UseSetting("RateLimiting:WritesPerMinute", "10000");
 
-    async Task IAsyncLifetime.DisposeAsync()
+    // xunit v3's IAsyncLifetime disposes through IAsyncDisposable, which the factory implements.
+    public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();
         await _postgres.DisposeAsync();
+        GC.SuppressFinalize(this);
     }
 }
 

@@ -23,7 +23,7 @@ public class ForwardedHeadersTests(ApiFactory factory)
             request.Headers.Add("X-Forwarded-Proto", forwardedProto);
         }
 
-        var response = await client.SendAsync(request);
+        var response = await client.SendAsync(request, TestRun.Token);
 
         response.EnsureSuccessStatusCode();
         Assert.Equal(expectedScheme, response.Headers.Location?.Scheme);

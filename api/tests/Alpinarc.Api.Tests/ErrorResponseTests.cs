@@ -16,7 +16,7 @@ public class ErrorResponseTests(ApiFactory factory)
     {
         using var client = factory.CreateClient();
 
-        var response = await client.GetAsync(path);
+        var response = await client.GetAsync(path, TestRun.Token);
 
         await AssertProblemDetails(response, HttpStatusCode.NotFound);
     }
@@ -31,7 +31,7 @@ public class ErrorResponseTests(ApiFactory factory)
             .UseSetting("ConnectionStrings:Alpinarc", "Host=localhost;Port=1;Database=x;Username=x;Password=x"));
         using var client = unreachableDb.CreateClient();
 
-        var response = await client.GetAsync("/lodges");
+        var response = await client.GetAsync("/lodges", TestRun.Token);
 
         var problem = await AssertProblemDetails(response, HttpStatusCode.InternalServerError);
         Assert.Null(problem.Detail);

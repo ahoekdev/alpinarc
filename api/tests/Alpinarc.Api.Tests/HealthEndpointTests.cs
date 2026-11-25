@@ -13,10 +13,10 @@ public class HealthEndpointTests(ApiFactory factory)
     {
         using var client = factory.CreateClient();
 
-        var response = await client.GetAsync(path);
+        var response = await client.GetAsync(path, TestRun.Token);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("Healthy", await response.Content.ReadAsStringAsync());
+        Assert.Equal("Healthy", await response.Content.ReadAsStringAsync(TestRun.Token));
     }
 
     [Theory]
@@ -31,9 +31,9 @@ public class HealthEndpointTests(ApiFactory factory)
             "ConnectionStrings:Alpinarc", "Host=localhost;Port=1;Database=x;Username=x;Password=x"));
         using var client = unreachableDb.CreateClient();
 
-        var response = await client.GetAsync(path);
+        var response = await client.GetAsync(path, TestRun.Token);
 
         Assert.Equal(expectedStatus, response.StatusCode);
-        Assert.Equal(expectedBody, await response.Content.ReadAsStringAsync());
+        Assert.Equal(expectedBody, await response.Content.ReadAsStringAsync(TestRun.Token));
     }
 }

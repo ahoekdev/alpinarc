@@ -16,15 +16,17 @@ public class RateLimitingTests(ApiFactory factory)
 
         for (var i = 0; i < 2; i++)
         {
-            var allowed = await client.PostAsJsonAsync("/lodges", new { name = TestNames.Unique("Rate limit hut") });
+            var allowed = await client.PostAsJsonAsync(
+                "/lodges", new { name = TestNames.Unique("Rate limit hut") }, TestRun.Token);
             Assert.Equal(HttpStatusCode.Created, allowed.StatusCode);
         }
 
-        var rejected = await client.PostAsJsonAsync("/lodges", new { name = TestNames.Unique("Rate limit hut") });
+        var rejected = await client.PostAsJsonAsync(
+            "/lodges", new { name = TestNames.Unique("Rate limit hut") }, TestRun.Token);
 
         Assert.Equal(HttpStatusCode.TooManyRequests, rejected.StatusCode);
         Assert.Equal("application/problem+json", rejected.Content.Headers.ContentType?.MediaType);
-        var problem = await rejected.Content.ReadFromJsonAsync<ProblemDetails>();
+        var problem = await rejected.Content.ReadFromJsonAsync<ProblemDetails>(TestRun.Token);
         Assert.Equal((int)HttpStatusCode.TooManyRequests, problem?.Status);
     }
 
@@ -37,7 +39,7 @@ public class RateLimitingTests(ApiFactory factory)
 
         for (var i = 0; i < 3; i++)
         {
-            var response = await client.GetAsync("/lodges");
+            var response = await client.GetAsync("/lodges", TestRun.Token);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
     }
