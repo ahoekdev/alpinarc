@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/container";
 import { Page } from "@/components/page";
+import { PageTitle } from "@/components/page-title";
+import { Stack } from "@/components/stack";
 import { LodgeForm } from "./components/lodge-form";
 import { LodgeList } from "./components/lodge-list";
 
@@ -10,11 +12,14 @@ export const metadata: Metadata = {
 
 export default function LodgesPage() {
   return (
-    <Container>
-      <Page title="Lodges">
-        <LodgeForm />
-        <LodgeList />
-      </Page>
-    </Container>
+    <Page>
+      <Container>
+        <Stack>
+          <PageTitle>Lodges</PageTitle>
+          <LodgeForm />
+          <LodgeList />
+        </Stack>
+      </Container>
+    </Page>
   );
 }
