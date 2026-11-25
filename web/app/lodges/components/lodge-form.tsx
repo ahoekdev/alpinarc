@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { Form } from "@/components/form";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,6 @@ import {
   CreateLodgeBody,
   createLodgeBodyNameMax,
 } from "@/lib/api/generated/index.zod";
-import styles from "../lodges.module.css";
 
 export function LodgeForm() {
   const queryClient = useQueryClient();
@@ -39,7 +39,14 @@ export function LodgeForm() {
   }
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      error={
+        createLodge.isError
+          ? "There was a problem saving the lodge."
+          : undefined
+      }
+    >
       <Field label="Lodge name" error={errors.name?.message}>
         <Input
           maxLength={createLodgeBodyNameMax}
@@ -50,11 +57,6 @@ export function LodgeForm() {
       <Button type="submit" disabled={createLodge.isPending}>
         Add lodge
       </Button>
-      {createLodge.isError && (
-        <p role="alert" className={styles.formError}>
-          There was a problem saving the lodge.
-        </p>
-      )}
-    </form>
+    </Form>
   );
 }

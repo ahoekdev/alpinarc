@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Header } from "@/components/header";
 import "./globals.css";
 import styles from "./layout.module.css";
 
@@ -13,12 +13,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en">
       <body>
         <div id="root">
-          <header className={styles.header}>
-            <Link href="/">alpinarc</Link>
-            <nav>
-              <Link href="/lodges">Lodges</Link>
-            </nav>
-          </header>
+          <Header />
           <main className={styles.main}>{children}</main>
         </div>
       </body>

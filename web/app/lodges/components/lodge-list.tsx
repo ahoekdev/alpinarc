@@ -2,9 +2,9 @@
 
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
+import { List, ListItem } from "@/components/list";
 import { LoadingState } from "@/components/loading-state";
 import { useListLodges } from "@/lib/api/generated";
-import styles from "../lodges.module.css";
 
 const entityName = "lodges";
 
@@ -24,15 +24,19 @@ export function LodgeList() {
   }
 
   return (
-    <ul className={styles.list}>
+    <List>
       {lodges.map((lodge) => (
-        <li key={lodge.id} className={styles.item}>
+        <ListItem
+          key={lodge.id}
+          meta={
+            <time dateTime={lodge.createdAt}>
+              {new Date(lodge.createdAt).toLocaleDateString()}
+            </time>
+          }
+        >
           {lodge.name}
-          <time className={styles.date} dateTime={lodge.createdAt}>
-            {new Date(lodge.createdAt).toLocaleDateString()}
-          </time>
-        </li>
+        </ListItem>
       ))}
-    </ul>
+    </List>
   );
 }

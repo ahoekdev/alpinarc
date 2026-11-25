@@ -1,9 +1,11 @@
 import { Field as BaseField } from "@base-ui/react/field";
 import type { ComponentProps, ReactNode } from "react";
 import styles from "./field.module.css";
-import { mergeClassName } from "./merge-class-name";
 
-type FieldProps = Omit<ComponentProps<typeof BaseField.Root>, "invalid"> & {
+type FieldProps = Omit<
+  ComponentProps<typeof BaseField.Root>,
+  "invalid" | "className"
+> & {
   label: ReactNode;
   /** The error message, e.g. from React Hook Form. Marks the field invalid. */
   error?: string;
@@ -15,21 +17,11 @@ type FieldProps = Omit<ComponentProps<typeof BaseField.Root>, "invalid"> & {
  * A label, a control and its error message. Validation happens elsewhere
  * (React Hook Form); this only shows the result and wires up accessibility.
  */
-export function Field({
-  label,
-  error,
-  children,
-  className,
-  ...props
-}: FieldProps) {
+export function Field({ label, error, children, ...props }: FieldProps) {
   const invalid = error !== undefined;
 
   return (
-    <BaseField.Root
-      invalid={invalid}
-      className={mergeClassName(styles.field, className)}
-      {...props}
-    >
+    <BaseField.Root invalid={invalid} className={styles.field} {...props}>
       <BaseField.Label className={styles.label}>{label}</BaseField.Label>
       {children}
       {/* `invalid` alone doesn't show the error: it only shows by itself for
