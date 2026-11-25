@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Alpinarc.Api.Data;
 
-public class AlpinarcDbContext(DbContextOptions<AlpinarcDbContext> options) : DbContext(options)
+public sealed class AlpinarcDbContext(DbContextOptions<AlpinarcDbContext> options) : DbContext(options)
 {
     /// <summary>
     /// Compares text ignoring case ("Foo" equals "foo") but not accents. Non-deterministic ICU
