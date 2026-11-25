@@ -1,9 +1,9 @@
 "use client";
 
-import { EmptyState } from "@/components/empty-state";
-import { ErrorState } from "@/components/error-state";
+import { EmptyState } from "@/components/state/empty-state";
+import { ErrorState } from "@/components/state/error-state";
 import { List, ListItem } from "@/components/list";
-import { LoadingState } from "@/components/loading-state";
+import { LoadingState } from "@/components/state/loading-state";
 import { useListLodges } from "@/lib/api/generated";
 
 const entityName = "lodges";
