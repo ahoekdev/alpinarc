@@ -7,7 +7,7 @@ export default defineConfig({
     input,
     output: {
       mode: "tags-split",
-      target: "lib/api/generated",
+      target: "lib/api/__generated__",
       client: "react-query",
       httpClient: "fetch",
       clean: true,
@@ -25,7 +25,7 @@ export default defineConfig({
     input,
     output: {
       mode: "tags-split",
-      target: "lib/api/generated",
+      target: "lib/api/__generated__",
       client: "zod",
       fileExtension: ".zod.ts",
       formatter: "prettier",

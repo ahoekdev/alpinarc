@@ -34,7 +34,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     // Orval output
-    "lib/api/generated/**",
+    "lib/api/__generated__/**",
   ]),
 ]);
 

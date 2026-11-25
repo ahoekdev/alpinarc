@@ -8,7 +8,7 @@
 web/node_modules
 web/.next
 web/.env*
-web/lib/api/generated
+web/lib/api/__generated__
 web/*.tsbuildinfo
 web/next-env.d.ts
 web/Dockerfile

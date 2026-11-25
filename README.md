@@ -54,7 +54,7 @@ Migrations live in `api/src/Alpinarc.Api/Data/Migrations/` and are applied expli
 
 The API tests start their own throwaway Postgres container (Testcontainers), so Docker must be running for `just check` and `just check-api`.
 
-Building the API writes its OpenAPI document to `api/openapi/alpinarc-api.json`. Orval reads that file and generates the typed client into `web/lib/api/generated/`.
+Building the API writes its OpenAPI document to `api/openapi/alpinarc-api.json`. Orval reads that file and generates the typed client into `web/lib/api/__generated__/`.
 
 ## Deployment
 

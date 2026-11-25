@@ -9,7 +9,7 @@ import {
   ListItemMeta,
 } from "@/components/ui/list/list";
 import { LoadingState } from "@/components/ui/state/loading-state";
-import { useListLodges } from "@/lib/api/generated";
+import { useListLodges } from "@/lib/api/__generated__";
 
 const entityName = "lodges";
 
