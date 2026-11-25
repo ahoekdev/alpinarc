@@ -2,7 +2,12 @@
 
 import { EmptyState } from "@/components/state/empty-state";
 import { ErrorState } from "@/components/state/error-state";
-import { List, ListItem } from "@/components/list";
+import {
+  List,
+  ListItem,
+  ListItemContent,
+  ListItemMeta,
+} from "@/components/list";
 import { LoadingState } from "@/components/state/loading-state";
 import { useListLodges } from "@/lib/api/generated";
 
@@ -26,15 +31,13 @@ export function LodgeList() {
   return (
     <List>
       {lodges.map((lodge) => (
-        <ListItem
-          key={lodge.id}
-          meta={
+        <ListItem key={lodge.id}>
+          <ListItemContent>{lodge.name}</ListItemContent>
+          <ListItemMeta>
             <time dateTime={lodge.createdAt}>
               {new Date(lodge.createdAt).toLocaleDateString()}
             </time>
-          }
-        >
-          {lodge.name}
+          </ListItemMeta>
         </ListItem>
       ))}
     </List>

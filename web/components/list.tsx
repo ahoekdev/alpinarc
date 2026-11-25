@@ -1,22 +1,34 @@
 import type { ReactNode } from "react";
 import styles from "./list.module.css";
 
-/** A list without bullets of `ListItem`s, separated by lines. */
-export function List({ children }: { children: ReactNode }) {
+type ChildrenProps = { children: ReactNode };
+
+/** A list without bullets, with a line between `ListItem`s. */
+export function List({ children }: ChildrenProps) {
   return <ul className={styles.list}>{children}</ul>;
 }
 
-type ListItemProps = {
-  children: ReactNode;
-  /** Secondary information, shown muted at the end of the row. */
-  meta?: ReactNode;
-};
+/**
+ * A row of a `List`. Put a `ListItemContent` first and, optionally, a
+ * `ListItemMeta` second: the content starts the row and the meta sits at the
+ * end of it.
+ *
+ * @example
+ * <ListItem>
+ *   <ListItemContent>{lodge.name}</ListItemContent>
+ *   <ListItemMeta>{createdAt}</ListItemMeta>
+ * </ListItem>
+ */
+export function ListItem({ children }: ChildrenProps) {
+  return <li className={styles.item}>{children}</li>;
+}
 
-export function ListItem({ children, meta }: ListItemProps) {
-  return (
-    <li className={styles.item}>
-      {children}
-      {meta && <span className={styles.meta}>{meta}</span>}
-    </li>
-  );
+/** The main content of a `ListItem`. */
+export function ListItemContent({ children }: ChildrenProps) {
+  return <div className={styles.content}>{children}</div>;
+}
+
+/** Secondary information at the end of a `ListItem`, in muted text. */
+export function ListItemMeta({ children }: ChildrenProps) {
+  return <div className={styles.meta}>{children}</div>;
 }

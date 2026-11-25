@@ -1,13 +1,18 @@
 import Link from "next/link";
+import { Container } from "./container";
 import styles from "./header.module.css";
 
 export function Header() {
   return (
     <header className={styles.header}>
-      <Link href="/">alpinarc</Link>
-      <nav>
-        <Link href="/lodges">Lodges</Link>
-      </nav>
+      <Container>
+        <div className={styles.bar}>
+          <Link href="/">alpinarc</Link>
+          <nav>
+            <Link href="/lodges">Lodges</Link>
+          </nav>
+        </div>
+      </Container>
     </header>
   );
 }
