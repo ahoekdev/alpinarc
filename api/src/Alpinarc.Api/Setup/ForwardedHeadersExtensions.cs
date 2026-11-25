@@ -8,9 +8,9 @@ public static class ForwardedHeadersExtensions
     {
         /// <summary>
         /// Railway terminates HTTPS at its edge and forwards plain HTTP. Reading X-Forwarded-Proto
-        /// makes the request count as HTTPS again, so UseHttpsRedirection doesn't redirect it in a
-        /// loop. Railway's proxy addresses aren't fixed, so the known networks and proxies are
-        /// cleared to trust it. The API is only reachable through that proxy.
+        /// makes the request count as HTTPS again, so URLs the API generates (such as the Location
+        /// header after a create) use https. Railway's proxy addresses aren't fixed, so the known
+        /// networks and proxies are cleared to trust it. The API is only reachable through that proxy.
         /// </summary>
         public IServiceCollection AddRailwayForwardedHeaders() =>
             services.Configure<ForwardedHeadersOptions>(options =>

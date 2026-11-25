@@ -38,7 +38,6 @@ public class CorsTests(ApiFactory factory)
             .UseSetting("Cors:AllowedOrigins:0", WebOrigin));
         using var client = web.CreateClient();
         using var request = new HttpRequestMessage(HttpMethod.Options, "/lodges");
-        request.Headers.Add("X-Forwarded-Proto", "https");
         request.Headers.Add("Origin", origin);
         request.Headers.Add("Access-Control-Request-Method", method);
         if (headers is not null)

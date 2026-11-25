@@ -22,13 +22,11 @@ app.UseForwardedHeaders();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
+// No HTTPS redirection: Railway only serves HTTPS at its edge, and an API client that
+// follows a redirect has already sent its request over plain HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-}
-else
-{
-    app.UseHttpsRedirection();
 }
 
 app.UseWebCors();

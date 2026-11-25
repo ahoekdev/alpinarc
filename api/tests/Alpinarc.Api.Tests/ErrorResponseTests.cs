@@ -30,10 +30,8 @@ public class ErrorResponseTests(ApiFactory factory)
             .UseEnvironment("Production")
             .UseSetting("ConnectionStrings:Alpinarc", "Host=localhost;Port=1;Database=x;Username=x;Password=x"));
         using var client = unreachableDb.CreateClient();
-        using var request = new HttpRequestMessage(HttpMethod.Get, "/lodges");
-        request.Headers.Add("X-Forwarded-Proto", "https");
 
-        var response = await client.SendAsync(request);
+        var response = await client.GetAsync("/lodges");
 
         var problem = await AssertProblemDetails(response, HttpStatusCode.InternalServerError);
         Assert.Null(problem.Detail);
