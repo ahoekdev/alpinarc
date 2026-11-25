@@ -14,20 +14,41 @@ public class CorsTests(ApiFactory factory)
     [InlineData("https://other.example.com", null)]
     public async Task Preflight_AllowsOnlyConfiguredOrigin(string origin, string? expectedAllowOrigin)
     {
-        using var client = factory
-            .WithWebHostBuilder(builder => builder
-                .UseEnvironment("Production")
-                .UseSetting("Cors:AllowedOrigins:0", WebOrigin))
-            .CreateClient();
+        var response = await SendPreflight(origin, "POST", "content-type");
+
+        Assert.Equal(expectedAllowOrigin, GetHeader(response, "Access-Control-Allow-Origin"));
+    }
+
+    // The policy allows only what the web app sends: GET and POST, with a JSON Content-Type.
+    // The API always answers with these lists, and the browser blocks a request that asks
+    // for anything else (here DELETE and X-Custom).
+    [Fact]
+    public async Task Preflight_AllowsOnlyWebAppMethodsAndHeaders()
+    {
+        var response = await SendPreflight(WebOrigin, "DELETE", "x-custom");
+
+        Assert.Equal("GET,POST", GetHeader(response, "Access-Control-Allow-Methods"));
+        Assert.Equal("Content-Type", GetHeader(response, "Access-Control-Allow-Headers"));
+    }
+
+    private async Task<HttpResponseMessage> SendPreflight(string origin, string method, string? headers)
+    {
+        using var web = factory.WithWebHostBuilder(builder => builder
+            .UseEnvironment("Production")
+            .UseSetting("Cors:AllowedOrigins:0", WebOrigin));
+        using var client = web.CreateClient();
         using var request = new HttpRequestMessage(HttpMethod.Options, "/lodges");
         request.Headers.Add("X-Forwarded-Proto", "https");
         request.Headers.Add("Origin", origin);
-        request.Headers.Add("Access-Control-Request-Method", "POST");
-        request.Headers.Add("Access-Control-Request-Headers", "content-type");
+        request.Headers.Add("Access-Control-Request-Method", method);
+        if (headers is not null)
+        {
+            request.Headers.Add("Access-Control-Request-Headers", headers);
+        }
 
-        var response = await client.SendAsync(request);
-
-        response.Headers.TryGetValues("Access-Control-Allow-Origin", out var allowOrigin);
-        Assert.Equal(expectedAllowOrigin, allowOrigin?.SingleOrDefault());
+        return await client.SendAsync(request);
     }
+
+    private static string? GetHeader(HttpResponseMessage response, string name) =>
+        response.Headers.TryGetValues(name, out var values) ? values.SingleOrDefault() : null;
 }

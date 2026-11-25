@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 
 namespace Alpinarc.Api.Setup;
 
@@ -19,8 +20,10 @@ public static class WebCorsExtensions
             services.AddOptions<CorsOptions>()
                 .Configure<IOptions<WebCorsOptions>>((options, web) => options.AddPolicy(PolicyName, policy => policy
                     .WithOrigins(web.Value.AllowedOrigins)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()));
+                    // Only what the web app's fetch client sends: reads, creates, and the JSON
+                    // Content-Type. Widen this when the API gets other methods or headers.
+                    .WithMethods(HttpMethods.Get, HttpMethods.Post)
+                    .WithHeaders(HeaderNames.ContentType)));
 
             return services.AddCors();
         }
