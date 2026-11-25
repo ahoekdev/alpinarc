@@ -1,0 +1,50 @@
+# C# style and analyzer settings for the API, on top of the repo's root .editorconfig.
+# Kept here rather than in the root file so the Docker build, whose context is api/,
+# sees them too.
+
+[*.cs]
+# C# style. EnforceCodeStyleInBuild (Directory.Build.props) makes rules set to warning
+# fail the build, so they are checked in CI as well as in the IDE.
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_braces = true:warning
+csharp_style_var_for_built_in_types = true:warning
+csharp_style_var_when_type_is_apparent = true:warning
+csharp_style_var_elsewhere = true:warning
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_event = false:warning
+dotnet_style_predefined_type_for_locals_parameters_members = true:warning
+dotnet_style_predefined_type_for_member_access = true:warning
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+csharp_style_prefer_primary_constructors = true:warning
+dotnet_style_prefer_collection_expression = when_types_loosely_match:warning
+
+# Unnecessary usings (needs GenerateDocumentationFile, set in Directory.Build.props)
+dotnet_diagnostic.IDE0005.severity = warning
+# Missing XML comments: documentation is written where it helps, not on every public member
+dotnet_diagnostic.CS1591.severity = none
+# Names differing only by case: misfires on C# 14 extension blocks, whose generated
+# grouping types differ only by case
+dotnet_diagnostic.CA1708.severity = none
+
+# Constants are PascalCase (this more specific rule wins over the one for private fields)
+dotnet_naming_rule.constants_pascal_case.symbols = constants
+dotnet_naming_rule.constants_pascal_case.style = pascal_case
+dotnet_naming_rule.constants_pascal_case.severity = warning
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.required_modifiers = const
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+# Private fields are _camelCase
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel_case
+dotnet_naming_rule.private_fields_underscore.severity = warning
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+
+# EF Core migrations are generated (with a UTF-8 BOM); keep dotnet format and analyzers off them
+[src/Alpinarc.Api/Data/Migrations/*.cs]
+generated_code = true

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
@@ -108,7 +109,7 @@ public class LodgesEndpointTests(ApiFactory factory)
         await CreateLodge(client, name);
 
         var response = await client.PostAsJsonAsync(
-            "/lodges", new { name = string.Format(duplicateFormat, name) });
+            "/lodges", new { name = string.Format(CultureInfo.InvariantCulture, duplicateFormat, name) });
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         var problem = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
