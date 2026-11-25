@@ -73,6 +73,28 @@ public class LodgesEndpointTests(ApiFactory factory)
     }
 
     [Fact]
+    public async Task Create_TrimsName()
+    {
+        using var client = factory.CreateClient();
+
+        var created = await CreateLodge(client, "  Cabane de Moiry \t\n");
+        var fetched = await client.GetFromJsonAsync<LodgeResponse>($"/lodges/{created.Id}");
+
+        Assert.Equal("Cabane de Moiry", created.Name);
+        Assert.Equal("Cabane de Moiry", fetched?.Name);
+    }
+
+    [Fact]
+    public async Task Create_NameLength_IsCheckedAfterTrimming()
+    {
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/lodges", new { name = $"  {new string('b', 200)}  " });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+    }
+
+    [Fact]
     public async Task GetById_UnknownId_Returns404()
     {
         using var client = factory.CreateClient();

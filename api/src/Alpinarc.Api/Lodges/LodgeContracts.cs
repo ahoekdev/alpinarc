@@ -10,10 +10,13 @@ public sealed class CreateLodgeRequest
 {
     // [Required] also rejects empty and whitespace-only strings. [MinLength(1)] only adds
     // minLength to the OpenAPI document, for the generated Zod schema.
+    //
+    // Trimmed when the JSON is read, before validation, so the length limit applies to the
+    // trimmed name and "  Foo  " is stored as "Foo".
     [Required]
     [MinLength(1)]
     [MaxLength(200)]
-    public required string Name { get; init; }
+    public required string Name { get; init => field = value?.Trim()!; }
 }
 
 public sealed record LodgeResponse(Guid Id, string Name, DateTimeOffset CreatedAt)
