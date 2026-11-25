@@ -13,7 +13,7 @@ WORKDIR /src
 ENV OpenApiGenerateDocuments=false
 
 # Restore first, so the layers stay cached until a project file changes.
-COPY global.json Directory.Build.props dotnet-tools.json ./
+COPY .editorconfig global.json Directory.Build.props Directory.Packages.props dotnet-tools.json ./
 COPY src/Alpinarc.Api/Alpinarc.Api.csproj src/Alpinarc.Api/
 # linux-x64 is restored as well because the migration bundle is self-contained.
 RUN dotnet tool restore \

@@ -1,0 +1,6 @@
+# Test-only analyzer settings, on top of the repo's root .editorconfig.
+[*.cs]
+# Test names use underscores: Method_Condition_ExpectedResult
+dotnet_diagnostic.CA1707.severity = none
+# xUnit collection fixtures are named ...Collection by convention
+dotnet_diagnostic.CA1711.severity = none
