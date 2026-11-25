@@ -1,15 +1,31 @@
+using System.Reflection;
 using Alpinarc.Api;
 using Alpinarc.Api.Data;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 const string WebCorsPolicy = "Web";
 const string ReadyTag = "ready";
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuration is validated when the app starts, so a misconfigured deploy fails right away
+// instead of on the first request. Not while the build generates the OpenAPI document: that
+// starts the app too, without any configuration.
+var connectionStrings = builder.Services.AddOptions<ConnectionStringsOptions>()
+    .BindConfiguration(ConnectionStringsOptions.SectionName);
+var webCors = builder.Services.AddOptions<WebCorsOptions>()
+    .BindConfiguration(WebCorsOptions.SectionName);
+if (Assembly.GetEntryAssembly()?.GetName().Name != "GetDocument.Insider")
+{
+    connectionStrings.ValidateDataAnnotations().ValidateOnStart();
+    webCors.ValidateDataAnnotations().ValidateOnStart();
+}
 
 builder.Services.AddDbContext<AlpinarcDbContext>(options => options
     .UseNpgsql(builder.Configuration.GetConnectionString("Alpinarc"))
@@ -36,14 +52,12 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear();
 });
 
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(WebCorsPolicy, policy => policy
-        .WithOrigins(allowedOrigins)
+builder.Services.AddCors();
+builder.Services.AddOptions<CorsOptions>()
+    .Configure<IOptions<WebCorsOptions>>((options, web) => options.AddPolicy(WebCorsPolicy, policy => policy
+        .WithOrigins(web.Value.AllowedOrigins)
         .AllowAnyHeader()
-        .AllowAnyMethod());
-});
+        .AllowAnyMethod()));
 
 // The write endpoints are anonymous until there is authentication, so they share one
 // fixed-window limit. It isn't partitioned by client IP, because X-Forwarded-For is
