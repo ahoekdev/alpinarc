@@ -1,22 +1,34 @@
 import { defineConfig } from "orval";
 
+const input = { target: "../api/openapi/alpinarc-api.json" };
+
 export default defineConfig({
   api: {
-    input: {
-      target: "../api/openapi/alpinarc-api.json",
-    },
+    input,
     output: {
       mode: "tags-split",
-      target: "lib/api/generated",
-      client: "fetch",
+      target: "lib/api/__generated__",
+      client: "react-query",
+      httpClient: "fetch",
       clean: true,
       formatter: "prettier",
+      baseUrl: { runtime: "process.env.NEXT_PUBLIC_API_URL" },
       override: {
-        mutator: {
-          path: "lib/api/fetcher.ts",
-          name: "apiFetch",
+        fetch: {
+          includeHttpResponseReturnType: false,
+          forceSuccessResponse: true,
         },
       },
+    },
+  },
+  apiZod: {
+    input,
+    output: {
+      mode: "tags-split",
+      target: "lib/api/__generated__",
+      client: "zod",
+      fileExtension: ".zod.ts",
+      formatter: "prettier",
     },
   },
 });

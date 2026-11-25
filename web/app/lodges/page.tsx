@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Lodges } from "./lodges";
+import { Container } from "@/components/ui/container/container";
+import { Page } from "@/components/ui/page/page";
+import { PageTitle } from "@/components/ui/page-title/page-title";
+import { Stack } from "@/components/ui/stack/stack";
+import { LodgeForm } from "./components/lodge-form";
+import { LodgeList } from "./components/lodge-list";
 
 export const metadata: Metadata = {
   title: "Lodges | alpinarc",
@@ -7,9 +12,14 @@ export const metadata: Metadata = {
 
 export default function LodgesPage() {
   return (
-    <>
-      <h1>Lodges</h1>
-      <Lodges />
-    </>
+    <Page>
+      <Container>
+        <Stack>
+          <PageTitle>Lodges</PageTitle>
+          <LodgeForm />
+          <LodgeList />
+        </Stack>
+      </Container>
+    </Page>
   );
 }

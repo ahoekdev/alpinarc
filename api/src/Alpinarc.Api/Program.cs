@@ -1,6 +1,7 @@
 using Alpinarc.Api.Data;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
 
 const string WebCorsPolicy = "Web";
@@ -12,7 +13,9 @@ builder.Services.AddDbContext<AlpinarcDbContext>(options => options
     .UseNpgsql(builder.Configuration.GetConnectionString("Alpinarc"))
     .UseSnakeCaseNamingConvention());
 
-builder.Services.AddControllers();
+// Key validation errors by JSON property name ("name", not "Name"), as the web forms expect.
+builder.Services.AddControllers(options =>
+    options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider()));
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<AlpinarcDbContext>(tags: [ReadyTag]);

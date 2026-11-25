@@ -1,0 +1,5 @@
+.container {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-inline: var(--space-3);
+}

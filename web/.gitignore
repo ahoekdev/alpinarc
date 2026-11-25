@@ -42,4 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 # orval output (regenerate with npm run generate:api)
-/lib/api/generated
+/lib/api/__generated__
