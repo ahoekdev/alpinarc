@@ -15,13 +15,15 @@ public class LodgesEndpointTests(ApiFactory factory)
     {
         using var client = factory.CreateClient();
 
-        var createResponse = await client.PostAsJsonAsync("/lodges", new { name = "Refuge du Goûter" });
+        var name = TestNames.Unique("Refuge du Goûter");
+
+        var createResponse = await client.PostAsJsonAsync("/lodges", new { name });
 
         Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
         var created = await createResponse.Content.ReadFromJsonAsync<LodgeResponse>();
         Assert.NotNull(created);
         Assert.NotEqual(Guid.Empty, created.Id);
-        Assert.Equal("Refuge du Goûter", created.Name);
+        Assert.Equal(name, created.Name);
         Assert.Equal($"/lodges/{created.Id}", createResponse.Headers.Location?.AbsolutePath);
 
         var fetched = await client.GetFromJsonAsync<LodgeResponse>(createResponse.Headers.Location);
@@ -67,7 +69,7 @@ public class LodgesEndpointTests(ApiFactory factory)
     {
         using var client = factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/lodges", new { name = new string('a', length) });
+        var response = await client.PostAsJsonAsync("/lodges", new { name = TestNames.Unique(length) });
 
         Assert.Equal(expected, response.StatusCode);
     }
@@ -77,11 +79,13 @@ public class LodgesEndpointTests(ApiFactory factory)
     {
         using var client = factory.CreateClient();
 
-        var created = await CreateLodge(client, "  Cabane de Moiry \t\n");
+        var name = TestNames.Unique("Cabane de Moiry");
+
+        var created = await CreateLodge(client, $"  {name} \t\n");
         var fetched = await client.GetFromJsonAsync<LodgeResponse>($"/lodges/{created.Id}");
 
-        Assert.Equal("Cabane de Moiry", created.Name);
-        Assert.Equal("Cabane de Moiry", fetched?.Name);
+        Assert.Equal(name, created.Name);
+        Assert.Equal(name, fetched?.Name);
     }
 
     [Fact]
@@ -89,7 +93,50 @@ public class LodgesEndpointTests(ApiFactory factory)
     {
         using var client = factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/lodges", new { name = $"  {new string('b', 200)}  " });
+        var response = await client.PostAsJsonAsync("/lodges", new { name = $"  {TestNames.Unique(200)}  " });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("{0}")]
+    [InlineData("  {0}  ")]
+    public async Task Create_DuplicateName_Returns409KeyedByName(string duplicateFormat)
+    {
+        using var client = factory.CreateClient();
+        var name = TestNames.Unique("Monte Rosa Hut");
+        await CreateLodge(client, name);
+
+        var response = await client.PostAsJsonAsync(
+            "/lodges", new { name = string.Format(duplicateFormat, name) });
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        var problem = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+        Assert.NotNull(problem);
+        Assert.Equal((int)HttpStatusCode.Conflict, problem.Status);
+        Assert.Contains("name", problem.Errors.Keys);
+    }
+
+    [Fact]
+    public async Task Create_NameDifferingOnlyInCase_Returns409()
+    {
+        using var client = factory.CreateClient();
+        var name = TestNames.Unique("Monte Rosa Hut");
+        await CreateLodge(client, name);
+
+        var response = await client.PostAsJsonAsync("/lodges", new { name = name.ToUpperInvariant() });
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Create_NameDifferingOnlyInAccents_IsAllowed()
+    {
+        using var client = factory.CreateClient();
+        var suffix = Guid.NewGuid().ToString("N");
+        await CreateLodge(client, $"Refuge du Gouter {suffix}");
+
+        var response = await client.PostAsJsonAsync("/lodges", new { name = $"Refuge du Goûter {suffix}" });
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
     }
@@ -119,8 +166,8 @@ public class LodgesEndpointTests(ApiFactory factory)
     {
         using var client = factory.CreateClient();
         // Created in alphabetical order, so sorting newest first would put them the other way round.
-        var aiguille = await CreateLodge(client, "Aiguille Hut");
-        var zermatt = await CreateLodge(client, "Zermatt Hut");
+        var aiguille = await CreateLodge(client, TestNames.Unique("Aiguille Hut"));
+        var zermatt = await CreateLodge(client, TestNames.Unique("Zermatt Hut"));
 
         var lodges = await client.GetFromJsonAsync<List<LodgeResponse>>("/lodges");
 

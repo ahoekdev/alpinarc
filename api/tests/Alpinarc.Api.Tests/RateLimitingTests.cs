@@ -17,11 +17,11 @@ public class RateLimitingTests(ApiFactory factory)
 
         for (var i = 0; i < 2; i++)
         {
-            var allowed = await client.PostAsJsonAsync("/lodges", new { name = $"Rate limit hut {i}" });
+            var allowed = await client.PostAsJsonAsync("/lodges", new { name = TestNames.Unique("Rate limit hut") });
             Assert.Equal(HttpStatusCode.Created, allowed.StatusCode);
         }
 
-        var rejected = await client.PostAsJsonAsync("/lodges", new { name = "Rate limit hut 2" });
+        var rejected = await client.PostAsJsonAsync("/lodges", new { name = TestNames.Unique("Rate limit hut") });
 
         Assert.Equal(HttpStatusCode.TooManyRequests, rejected.StatusCode);
         Assert.Equal("application/problem+json", rejected.Content.Headers.ContentType?.MediaType);
