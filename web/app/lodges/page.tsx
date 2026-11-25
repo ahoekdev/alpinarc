@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/container";
-import { Page } from "@/components/page";
-import { PageTitle } from "@/components/page-title";
-import { Stack } from "@/components/stack";
+import { Container } from "@/components/container/container";
+import { Page } from "@/components/page/page";
+import { PageTitle } from "@/components/page-title/page-title";
+import { Stack } from "@/components/stack/stack";
 import { LodgeForm } from "./components/lodge-form";
 import { LodgeList } from "./components/lodge-list";
 

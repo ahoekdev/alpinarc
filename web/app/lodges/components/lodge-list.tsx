@@ -7,7 +7,7 @@ import {
   ListItem,
   ListItemContent,
   ListItemMeta,
-} from "@/components/list";
+} from "@/components/list/list";
 import { LoadingState } from "@/components/state/loading-state";
 import { useListLodges } from "@/lib/api/generated";
 

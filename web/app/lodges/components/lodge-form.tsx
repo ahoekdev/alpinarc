@@ -3,10 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Form } from "@/components/form";
-import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/form/form";
+import { Button } from "@/components/ui/button/button";
+import { Field } from "@/components/ui/field/field";
+import { Input } from "@/components/ui/input/input";
 import { getListLodgesQueryKey, useCreateLodge } from "@/lib/api/generated";
 import type { CreateLodgeRequest } from "@/lib/api/generated/alpinarcApiV1.schemas";
 import {

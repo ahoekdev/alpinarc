@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Container } from "./container";
+import { Container } from "@/components/container/container";
 import styles from "./header.module.css";
 
 export function Header() {
