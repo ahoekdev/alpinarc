@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Alpinarc.Api;
+namespace Alpinarc.Api.Setup;
 
 /// <summary>
 /// The <c>ConnectionStrings</c> section, validated at startup so a missing connection string

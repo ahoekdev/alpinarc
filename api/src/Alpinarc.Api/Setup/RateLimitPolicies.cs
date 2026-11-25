@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace Alpinarc.Api;
+namespace Alpinarc.Api.Setup;
 
 /// <summary>Names of the rate-limiting policies, for <see cref="EnableRateLimitingAttribute"/>.</summary>
 public static class RateLimitPolicies

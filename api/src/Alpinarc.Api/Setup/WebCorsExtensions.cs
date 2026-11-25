@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Options;
 
-namespace Alpinarc.Api;
+namespace Alpinarc.Api.Setup;
 
 /// <summary>The CORS policy that lets the web app call the API.</summary>
 public static class WebCorsExtensions

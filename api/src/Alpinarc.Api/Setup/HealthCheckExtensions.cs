@@ -1,7 +1,7 @@
 using Alpinarc.Api.Data;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
-namespace Alpinarc.Api;
+namespace Alpinarc.Api.Setup;
 
 public static class HealthCheckExtensions
 {

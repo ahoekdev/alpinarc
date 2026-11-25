@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Alpinarc.Api;
+namespace Alpinarc.Api.Setup;
 
 /// <summary>The origins of the web app, which the CORS policy allows. Validated at startup.</summary>
 public sealed class WebCorsOptions : IValidatableObject

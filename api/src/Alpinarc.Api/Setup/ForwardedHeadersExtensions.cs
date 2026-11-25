@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.HttpOverrides;
 
-namespace Alpinarc.Api;
+namespace Alpinarc.Api.Setup;
 
 public static class ForwardedHeadersExtensions
 {

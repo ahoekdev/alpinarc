@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.Options;
 
-namespace Alpinarc.Api;
+namespace Alpinarc.Api.Setup;
 
 public static class OptionsBuilderExtensions
 {

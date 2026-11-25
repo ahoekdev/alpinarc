@@ -1,4 +1,5 @@
 using Alpinarc.Api.Data;
+using Alpinarc.Api.Setup;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;

@@ -1,4 +1,4 @@
-using Alpinarc.Api;
+using Alpinarc.Api.Setup;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
