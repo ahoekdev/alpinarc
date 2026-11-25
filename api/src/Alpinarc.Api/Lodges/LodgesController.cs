@@ -1,5 +1,6 @@
 using Alpinarc.Api.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace Alpinarc.Api.Lodges;
@@ -47,9 +48,11 @@ public class LodgesController(AlpinarcDbContext db) : ControllerBase
 
     [HttpPost]
     [EndpointName("CreateLodge")]
+    [EnableRateLimiting(RateLimitPolicies.Writes)]
     [Consumes("application/json")]
     [ProducesResponseType<LodgeResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
     public async Task<ActionResult<LodgeResponse>> Create(
         CreateLodgeRequest request, CancellationToken cancellationToken)
     {

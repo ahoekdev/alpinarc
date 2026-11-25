@@ -1,7 +1,9 @@
+using Alpinarc.Api;
 using Alpinarc.Api.Data;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 const string WebCorsPolicy = "Web";
@@ -43,6 +45,21 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod());
 });
 
+// The write endpoints are anonymous until there is authentication, so they share one
+// fixed-window limit. It isn't partitioned by client IP, because X-Forwarded-For is
+// trusted from any proxy (see above) and so can be spoofed. Rejected requests get a 429,
+// which UseStatusCodePages turns into ProblemDetails.
+var writesPerMinute = builder.Configuration.GetValue<int>("RateLimiting:WritesPerMinute");
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter(RateLimitPolicies.Writes, limiter =>
+    {
+        limiter.PermitLimit = writesPerMinute;
+        limiter.Window = TimeSpan.FromMinutes(1);
+    });
+});
+
 var app = builder.Build();
 
 app.UseForwardedHeaders();
@@ -59,6 +76,7 @@ else
 }
 
 app.UseCors(WebCorsPolicy);
+app.UseRateLimiter();
 app.UseAuthorization();
 
 // Liveness: is the process running? Runs no checks, so a database outage doesn't

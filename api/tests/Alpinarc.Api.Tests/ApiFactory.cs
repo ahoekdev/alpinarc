@@ -25,8 +25,11 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         await db.Database.MigrateAsync();
     }
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder) =>
-        builder.UseSetting("ConnectionStrings:Alpinarc", _postgres.GetConnectionString());
+    protected override void ConfigureWebHost(IWebHostBuilder builder) => builder
+        .UseSetting("ConnectionStrings:Alpinarc", _postgres.GetConnectionString())
+        // Every test shares this one limit, so keep it out of the way. RateLimitingTests
+        // sets a low limit to test it.
+        .UseSetting("RateLimiting:WritesPerMinute", "10000");
 
     async Task IAsyncLifetime.DisposeAsync()
     {
