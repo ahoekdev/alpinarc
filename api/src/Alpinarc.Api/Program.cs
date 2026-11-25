@@ -17,6 +17,9 @@ builder.Services.AddDbContext<AlpinarcDbContext>(options => options
 builder.Services.AddControllers(options =>
     options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider()));
 builder.Services.AddOpenApi();
+// Error responses (unhandled exceptions, unknown routes) use the ProblemDetails shape
+// that the OpenAPI document promises, instead of an empty body.
+builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<AlpinarcDbContext>(tags: [ReadyTag]);
 
@@ -43,6 +46,8 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseForwardedHeaders();
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {
