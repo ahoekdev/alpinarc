@@ -8,8 +8,10 @@ export function SiteHeader() {
       <Container>
         <div className={styles.bar}>
           <Link href="/">alpinarc</Link>
-          <nav>
+          <nav className={styles.nav}>
             <Link href="/lodges">Lodges</Link>
+            <Link href="/stages">Stages</Link>
+            <Link href="/tours">Tours</Link>
           </nav>
         </div>
       </Container>
