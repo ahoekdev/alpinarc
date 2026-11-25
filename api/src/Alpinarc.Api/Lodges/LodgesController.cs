@@ -20,13 +20,11 @@ public class LodgesController(AlpinarcDbContext db) : ControllerBase
     [ProducesResponseType<IReadOnlyList<LodgeResponse>>(StatusCodes.Status200OK)]
     public async Task<IReadOnlyList<LodgeResponse>> List(CancellationToken cancellationToken)
     {
-        var lodges = await db.Lodges
-            .AsNoTracking()
+        return await db.Lodges
             .OrderBy(l => l.Name)
             .ThenBy(l => l.Id)
+            .Select(LodgeResponse.Projection)
             .ToListAsync(cancellationToken);
-
-        return [.. lodges.Select(LodgeResponse.From)];
     }
 
     [HttpGet("{id:guid}")]
@@ -36,15 +34,16 @@ public class LodgesController(AlpinarcDbContext db) : ControllerBase
     public async Task<ActionResult<LodgeResponse>> Get(Guid id, CancellationToken cancellationToken)
     {
         var lodge = await db.Lodges
-            .AsNoTracking()
-            .SingleOrDefaultAsync(l => l.Id == id, cancellationToken);
+            .Where(l => l.Id == id)
+            .Select(LodgeResponse.Projection)
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (lodge is null)
         {
             return NotFound();
         }
 
-        return LodgeResponse.From(lodge);
+        return lodge;
     }
 
     [HttpPost]

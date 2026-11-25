@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 namespace Alpinarc.Api.Lodges;
 
@@ -17,5 +18,10 @@ public sealed class CreateLodgeRequest
 
 public sealed record LodgeResponse(Guid Id, string Name, DateTimeOffset CreatedAt)
 {
+    /// <summary>For queries: EF translates it to SQL, so only these columns are read.</summary>
+    public static readonly Expression<Func<Lodge, LodgeResponse>> Projection =
+        lodge => new LodgeResponse(lodge.Id, lodge.Name, lodge.CreatedAt);
+
+    /// <summary>For an entity that is already loaded, such as one just saved.</summary>
     public static LodgeResponse From(Lodge lodge) => new(lodge.Id, lodge.Name, lodge.CreatedAt);
 }
