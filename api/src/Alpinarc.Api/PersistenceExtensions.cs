@@ -1,6 +1,7 @@
+using Alpinarc.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Alpinarc.Api.Data;
+namespace Alpinarc.Api;
 
 public static class PersistenceExtensions
 {
