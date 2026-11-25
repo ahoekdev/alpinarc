@@ -17,6 +17,7 @@ namespace Alpinarc.Api.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:CollationDefinition:case_insensitive", "und-u-ks-level2,und-u-ks-level2,icu,False")
                 .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -40,10 +41,15 @@ namespace Alpinarc.Api.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .UseCollation("case_insensitive");
 
                     b.HasKey("Id")
                         .HasName("pk_lodges");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_lodges_name");
 
                     b.ToTable("lodges", (string)null);
                 });

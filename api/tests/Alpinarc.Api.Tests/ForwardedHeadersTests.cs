@@ -1,4 +1,4 @@
-using System.Net;
+using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Alpinarc.Api.Tests;
@@ -7,33 +7,25 @@ namespace Alpinarc.Api.Tests;
 [Collection(ApiCollection.Name)]
 public class ForwardedHeadersTests(ApiFactory factory)
 {
-    [Fact]
-    public async Task Request_WithoutForwardedProto_IsRedirectedToHttps()
+    [Theory]
+    [InlineData(null, "http")]
+    [InlineData("https", "https")]
+    public async Task Create_LocationHeader_UsesForwardedScheme(string? forwardedProto, string expectedScheme)
     {
-        using var client = CreateProductionClient();
+        using var production = factory.WithWebHostBuilder(builder => builder.UseEnvironment("Production"));
+        using var client = production.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/lodges")
+        {
+            Content = JsonContent.Create(new { name = TestNames.Unique("Forwarded Hut") }),
+        };
+        if (forwardedProto is not null)
+        {
+            request.Headers.Add("X-Forwarded-Proto", forwardedProto);
+        }
 
-        var response = await client.GetAsync("/health/live");
+        var response = await client.SendAsync(request, TestRun.Token);
 
-        Assert.Equal(HttpStatusCode.TemporaryRedirect, response.StatusCode);
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(expectedScheme, response.Headers.Location?.Scheme);
     }
-
-    [Fact]
-    public async Task Request_ForwardedAsHttps_IsNotRedirected()
-    {
-        using var client = CreateProductionClient();
-        using var request = new HttpRequestMessage(HttpMethod.Get, "/health/live");
-        request.Headers.Add("X-Forwarded-Proto", "https");
-
-        var response = await client.SendAsync(request);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    // Production turns on HTTPS redirection. An https_port makes it actually redirect,
-    // which is what would cause a redirect loop behind a proxy without forwarded headers.
-    private HttpClient CreateProductionClient() => factory
-        .WithWebHostBuilder(builder => builder
-            .UseEnvironment("Production")
-            .UseSetting("https_port", "443"))
-        .CreateClient(new() { AllowAutoRedirect = false });
 }

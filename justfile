@@ -56,7 +56,7 @@ check: check-api check-web
 check-api:
     dotnet format Alpinarc.slnx --verify-no-changes
     dotnet build Alpinarc.slnx
-    dotnet test Alpinarc.slnx --no-build
+    dotnet test --solution Alpinarc.slnx --no-build
 
 # CI checks for the web app: lint, formatting, types and build
 [working-directory('web')]

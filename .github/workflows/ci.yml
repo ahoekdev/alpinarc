@@ -40,7 +40,7 @@ jobs:
       - run: dotnet restore Alpinarc.slnx
       - run: dotnet format Alpinarc.slnx --verify-no-changes --no-restore
       - run: dotnet build Alpinarc.slnx --no-restore
-      - run: dotnet test Alpinarc.slnx --no-build
+      - run: dotnet test --solution Alpinarc.slnx --no-build
 
   web:
     needs: changes
