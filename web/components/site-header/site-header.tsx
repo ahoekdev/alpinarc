@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container/container";
-import styles from "./header.module.css";
+import styles from "./site-header.module.css";
 
-export function Header() {
+export function SiteHeader() {
   return (
     <header className={styles.header}>
       <Container>
