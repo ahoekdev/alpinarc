@@ -77,7 +77,6 @@ else
 
 app.UseCors(WebCorsPolicy);
 app.UseRateLimiter();
-app.UseAuthorization();
 
 // Liveness: is the process running? Runs no checks, so a database outage doesn't
 // make the platform restart the API. /health is kept as an alias for existing callers.
